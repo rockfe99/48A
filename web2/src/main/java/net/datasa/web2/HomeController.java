@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     /**
      * 메인 화면으로 이동
-     *
-     * @return
+     * @return templates폴더의 home.html경로
      */
     @GetMapping({"", "/"})
     public String home() {
         return "home";      //home.html로 포워딩
     }
 
+    /**
+     * Lombok 사용
+     * @return
+     */
     @GetMapping("lombok")
     public String lombokTest() {
         System.out.println("lombokTest 왔다감");
@@ -26,25 +29,43 @@ public class HomeController {
         Person p = new Person();
         Person p2 = new Person("aaa", "111", "홍길동", "서울시");
 
-        p2.setId("bbbbb");
+        p2.setId("bbbbb");      //Lombok으로 생성된 메소드들
         System.out.println(p2);
 
         return "redirect:/";    // http://localhost:9999/로 리다이렉트
     }
 
+    /**
+     * Logger 사용
+     * 클래스 상단에 @Slf4j 추가하고 log객체 사용
+     * @return
+     */
     @GetMapping("logger")
     public String loggerTest() {
         // @Slf4j를 붙이면 log객체 생성
         //error>warn>info>debug>trace 순서로 중요도
         //application.properties에서 단계 조절
-        log.info("info로 출력");
-        log.debug("debug로 출력");
         log.error("error로 출력");
         log.warn("warn으로 출력");
+        log.info("info로 출력");
+        log.debug("debug로 출력");
 
+        //출력시 변수의 값 포함하기
         int age = 10;
         String name = "김철수";
         log.debug("이름은 {} 나이는 {}세이다.", name, age);
+
+        return "redirect:/";
+    }
+
+    /**
+     * Debug 테스트 (실행이 아닌 "디버그"로 시작)
+     *
+     *
+     * @return
+     */
+    @GetMapping("debug")
+    public String debugTest() {
 
         return "redirect:/";
     }
