@@ -60,13 +60,19 @@ public class HomeController {
 
     /**
      * Debug 테스트 (실행이 아닌 "디버그"로 시작)
-     *
-     *
-     * @return
+     * @return 메인화면 경로로 이동
      */
     @GetMapping("debug")
     public String debugTest() {
-
+        int a = 10;
+        a++;
+        int s = 0;
+        for (int i = 1; i < 5; i++) {
+            s += i;
+            System.out.println("i");
+            System.out.println("일반 문장");
+        }
+        System.out.println(s);
         return "redirect:/";
     }
 
