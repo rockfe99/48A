@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영화 정보</title>
+</head>
+<body>
+<h2>[ 영화정보 ]</h2>
+
+<p><a th:href="@{/movies/new}">영화정보 등록</a></p>
+
+<table border="1">
+    <tr>
+        <th>No</th>
+        <th>제목</th>
+        <th>개봉연도</th>
+        <th>평점</th>
+    </tr>
+    <tr th:each="movie : ${movies}">
+        <td th:text="${movie.movieNum}">1</td>
+        <td>
+            <a th:href="@{'/movies/' + ${movie.movieNum}}" th:text="${movie.title}">제목</a>
+        </td>
+        <td th:text="${movie.releaseYear}">0</td>
+        <td th:text="${#numbers.formatDecimal(avgMap[movie.movieNum], 1, 1)}">0.0</td>
+    </tr>
+</table>
+
+<p><a th:href="@{/}">메인으로</a></p>
+</body>
+</html>

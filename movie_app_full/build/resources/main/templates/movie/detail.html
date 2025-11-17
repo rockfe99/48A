@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영화정보 상세보기</title>
+</head>
+<body>
+<h2>[ 영화정보 상세보기 ]</h2>
+
+<table border="1">
+    <tr>
+        <th>번호</th><td th:text="${movie.movieNum}">1</td>
+    </tr>
+    <tr>
+        <th>제목</th><td th:text="${movie.title}">제목</td>
+    </tr>
+    <tr>
+        <th>개봉연도</th><td th:text="${movie.releaseYear}">0</td>
+    </tr>
+    <tr>
+        <th>감독</th><td th:text="${movie.director}">감독</td>
+    </tr>
+    <tr>
+        <th>설명</th>
+        <td>
+            <pre th:text="${movie.description}">내용</pre>
+        </td>
+    </tr>
+    <tr>
+        <th>평균 평점</th>
+        <td id="avgScore" th:text="${#numbers.formatDecimal(avg,1,1)}">0.0</td>
+    </tr>
+</table>
+
+<h3>별점 목록</h3>
+<table border="1">
+    <tr>
+        <th>No</th>
+        <th>점수</th>
+        <th>작성자</th>
+        <th>작성일</th>
+    </tr>
+    <tr th:each="rating, stat : ${ratings}">
+        <td th:text="${stat.count}">1</td>
+        <td th:text="${rating.score}">5</td>
+        <td th:text="${rating.member.id}">aaa</td>
+        <td th:text="${#temporals.format(rating.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2025-10-12</td>
+    </tr>
+</table>
+
+<div>
+    <h3>별점 주기</h3>
+    <p>별 하나는 1점 ~ 별 다섯 개는 5점입니다.</p>
+    <select id="scoreSelect">
+        <option value="1">★</option>
+        <option value="2">★★</option>
+        <option value="3">★★★</option>
+        <option value="4">★★★★</option>
+        <option value="5">★★★★★</option>
+    </select>
+    <button type="button" onclick="sendRating()">별점주기</button>
+</div>
+
+<script type="text/javascript">
+    function sendRating() {
+        const score = document.getElementById('scoreSelect').value;
+        const movieNum = /*[[${movie.movieNum}]]*/ 0;
+        const params = new URLSearchParams();
+        params.append('movieNum', movieNum);
+        params.append('score', score);
+
+        fetch('/ratings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString()
+        }).then(resp => resp.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('avgScore').innerText = data.avg.toFixed(1);
+                    alert('별점이 등록되었습니다.');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            }).catch(err => {
+                alert('오류가 발생했습니다.');
+            });
+    }
+</script>
+
+<p><a th:href="@{/movies}">목록으로 이동</a></p>
+</body>
+</html>

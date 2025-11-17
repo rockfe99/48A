@@ -64,6 +64,7 @@ public class ParamController {
         return "paramView/model";
     }
 
+    /*
     @GetMapping("view4")
     public String view4() {
         //이름과 주민등록번호를 입력받을 수 있는 Form을 보여준다.
@@ -75,5 +76,5 @@ public class ParamController {
         //나이를 계산한다.
         //view5.html로 포워딩해서 이름과 계산한 나이를 출력한다.
     }
-
+    */
 }
