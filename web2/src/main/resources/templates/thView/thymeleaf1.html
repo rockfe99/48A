@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- 타임리프를 사용하기 위한 네임스페이스 -->
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>[ Thymeleaf  문법 1 ]</h1>
+<h3>* 값 출력</h3>
+<p>[[${str}]]</p>
+<p>[[${num + 1}]]</p>
+<p th:text="${str}">확인문자열</p>
+<p th:text="${tag}">확인문자열</p>
+<p th:utext="${tag}">확인문자열</p>
+
+<h3>* HTML과 Thymeleaf의 주석</h3>
+<!--<p th:text="${abc.length()}">확인문자열</p>-->
+<!--/* [[${abc.length()]] */-->
+
+<h3>* 연산자</h3>
+<h4>산술연산자 : + - * / %</h4>
+<h4>비교연산자 : < > <= >= == != lt gt le ge eq ne</h4>
+<h4>논리연산자 : and or not</h4>
+<p th:text="${num}"></p>
+<p th:text="${num * 2}"></p>
+<p th:text="${num > 0}"></p>
+<p th:text="${num gt 0}"></p>
+<pre>
+1. num은 1~100범위이다
+2. num은 홀수이다
+3. str은 "abc"이다</pre>
+<p th:text="${num ge 1 and num le 100}"></p>
+<p th:text="${num % 2 == 1}"></p>
+<p th:text="${str == 'abc'}"></p>
+
+<h3>* 경로 생성과 하이퍼링크</h3>
+<pre>1. static 아래의 image 폴더에 a.jpg가 있는 경우
+2. http://localhost:9999/ss/session1 경로가 있는 경우
+3. 이동할 url을 model에 저장해서 연결하는 경우</pre>
+<p><img th:src="@{/image/music.png}"></p>
+<p><a th:href="@{/ss/session1}">세션연습</a></p>
+<p><a th:href="${url}" th:text="${str}"></a></p>
+
+<h3>* 문자열</h3>
+<p>문자열 출력, 연결</p>
+<p th:text="${str}"></p>
+<p th:text="${str + 'abc'}"></p>
+<p th:text="|${str}abc|"></p>
+<p>문자열 비교</p>
+<p th:text="${str == '문자열'}"></p>
+<p th:text="${str.equals('문자열')}"></p>
+<p th:text="${str != 'abc'}"></p>
+<p th:text="${not str.equals('문자열')}"></p>
+
+<h3>* 객체 출력</h3>
+<p th:text="${person}"></p>
+<p th:text="${person.id}"></p>
+
+<div th:object="${person}">
+    <p th:text="*{id}"></p>
+    <p th:text="*{name}"></p>
+    <p th:text="*{address}"></p>
+</div>
+
+<h3>* 포매팅</h3>
+<p th:text="${n1}"></p>
+<p th:text="${n2}"></p>
+<p th:text="${n3}"></p>
+<p th:text="${localDate}"></p>
+<p th:text="${localTime}"></p>
+
+<!-- 숫자의 형식 지정. 전체 자리수, 소수점 이하 자리수, 백분율 형식 등 -->
+<p th:text="${#numbers.formatInteger(n1, 10)}"></p>
+<p th:text="${#numbers.formatInteger(n1, 3, 'COMMA')}"></p>
+<p th:text="${#numbers.formatDecimal(n2, 3, 'COMMA', 2, 'POINT')}"></p>
+<p th:text="${#numbers.formatPercent(n3, 0, 2)}"></p>
+
+<!-- 날짜, 시간 데이터의 형식 지정하여 출력하기
+    LocalDate, LocalDateTime 타입의 객체인 경우 -->
+<p th:text="${#temporals.format(localDate, 'yyyy년 M월 d일')}"></p>
+<p th:text="${#temporals.format(localTime, 'yyyy-MM-dd HH:mm:ss')}"></p>
+
+</body>
+</html>
