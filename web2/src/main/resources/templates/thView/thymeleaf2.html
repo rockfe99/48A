@@ -25,6 +25,76 @@
     <p>p태그 </p>
 </th:block>
 
+<div th:switch="${age}">
+    <p th:case="10">10</p>
+    <p th:case="20">20</p>
+    <p th:case="*">그 밖의 숫자</p>
+</div>
+
+<h3>* 리스트와 맵</h3>
+<p th:text="${#lists.size(personList)}"></p>
+<p th:text="${#maps.size(map)}"></p>
+<p th:text="${#maps.containsKey(map, 'name')}"></p>
+
+<H3>* 반복문</H3>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>이름</th>
+        <th>주소</th>
+    </tr>
+    <tr th:each="p , i : ${personList}">
+        <td th:text="${i.index}"></td>
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.name}"></td>
+        <td th:text="${p.address}"></td>
+    </tr>
+</table>
+
+<p th:each="item: ${personList}">
+    <span th:text="${item.id}"></span>
+    <span th:text="${item.name}"></span>
+</p>
+
+<p>맵의 모든 값을 출력</p>
+<table>
+    <tr th:each="item : ${map}">
+        <td>
+            <span th:text="${item.key}"></span>
+        </td>
+        <td>
+            <span th:text="${item.value}"></span>
+        </td>
+    </tr>
+</table>
+<p>맵의 특정 값을 읽을 때</p>
+<p th:text="${map.product}"></p>
+<p th:text="${map.price}"></p>
+
+<!--
+		index	현재 반복 인덱스  (0부터 시작)
+		count	현재 반복 인덱스  (1부터 시작)
+		size	총 요소 수
+		current	현재 요소
+		even	현재 반복이 짝수인지 여부 (boolean)
+		odd	현재 반복이 홀수인지 여부 (boolean)
+		first	현재 반복이 첫번째인지 여부 (boolean)
+		last	현재 반복이 마지막인지 여부 (boolean)
+	 -->
+
+<th:block th:each="n, status : ${#numbers.sequence(1, 5, 1)}">
+    <p>숫자
+        <span th:text="${status.index}"></span>,
+        <span th:text="${status.count}"></span>,
+        <span th:text="${status.size}"></span>,
+        <span th:text="${status.even}"></span>,
+        <span th:text="${status.odd}"></span>,
+        <span th:text="${status.first}"></span>,
+        <span th:text="${status.last}"></span>,
+        <span th:text="${n}">1</span>
+    </p>
+</th:block>
 
 </body>
 </html>
