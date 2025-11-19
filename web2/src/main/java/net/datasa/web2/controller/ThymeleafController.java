@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @Controller
 @Slf4j
@@ -43,5 +45,25 @@ public class ThymeleafController {
         return "thView/thymeleaf1";
     }
 
+    @GetMapping("thymeleaf2")
+    public String thymeleaf2(Model model) {
+        String name = "abc";
+        int age = 10;
+
+        ArrayList<Person> personList = new ArrayList<>();
+        personList.add(new Person("aaa", "111", "김", "서울"));
+        personList.add(new Person("bbb", "222", "이", "서울"));
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("product", "키보드");
+        map.put("price", 10000);
+
+        model.addAttribute("name", name);
+        model.addAttribute("age", age);
+        model.addAttribute("personList", personList);
+        model.addAttribute("map", map);
+
+        return "thView/thymeleaf2";
+    }
 
 }

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- 타임리프를 사용하기 위한 네임스페이스 -->
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>[ Thymeleaf  문법 2 ]</h1>
+
+<h3>* 값 출력</h3>
+<p>[[${name}]]</p>
+<p>[[${age}]]</p>
+<p>[[${personList}]]</p>
+<p>[[${map}]]</p>
+
+<h3>* 제어문</h3>
+
+<div th:if="${name == 'abc'}">true인경우 보이는 부분</div>
+<div th:unless="${name == 'abc'}">false인경우 보이는 부분</div>
+<div th:if="${name == 'abc'}">
+    <p>p태그 </p>
+</div>
+<th:block th:if="${name == 'abc'}">
+    <p>p태그 </p>
+</th:block>
+
+
+</body>
+</html>
