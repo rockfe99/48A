@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>저장</title>
+</head>
+<body>
+    <h1>[ 회원정보 입력 ]</h1>
+<!--    아이디, 이름, 나이 입력받아서  /input 경로로 전달-->
+    <form th:action="@{/input}" method="post">
+        ID <input type="text" name="id"><br>
+        이름 <input type="text" name="name"><br>
+        나이 <input type="number" name="age"><br>
+        <button type="submit">저장하기</button>
+    </form>
+</body>
+</html>
