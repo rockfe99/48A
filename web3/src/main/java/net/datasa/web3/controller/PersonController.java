@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
@@ -25,9 +26,13 @@ public class PersonController {
     public String input() {
         return "input";
     }
+
     @PostMapping("input")
     public String input(@ModelAttribute PersonDTO dto) {
         log.debug("전달받은값:{}", dto);
+
+        service.insertPerson(dto);
+
         /*
         서비스로 PersonDTO객체를 전달한다
         서비스의 메소드에서 PersonEntity를 생성한다
@@ -36,4 +41,12 @@ public class PersonController {
         */
         return "redirect:/";
     }
+
+    //delete?id=aaa
+    @GetMapping("delete")
+    public String del(@RequestParam(name="id") String id) {
+        service.deletePerson(id);
+        return "redirect:/";
+    }
+
 }
