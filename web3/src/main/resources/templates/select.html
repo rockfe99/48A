@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--결과가 없을때는 "해당 회원이 없습니다"-->
+<!--있을때는 아이디, 이름, 나이를 표에 넣어서 출력-->
+
+<div th:if="${dto == null}">
+    <p>해당 회원이 없습니다.</p>
+</div>
+
+<table th:if="${dto != null}" th:object="${dto}">
+dto객체의 개인정보를 표로 출력한다.
+</table>
+
+</body>
+</html>

@@ -5,10 +5,13 @@ import net.datasa.web3.dto.PersonDTO;
 import net.datasa.web3.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -47,6 +50,27 @@ public class PersonController {
     public String del(@RequestParam(name="id") String id) {
         service.deletePerson(id);
         return "redirect:/";
+    }
+
+    //select?id=bbb 경로로 요청
+    @GetMapping("select")
+    public String select(
+            @RequestParam(name="id") String id,
+            Model model) {
+        PersonDTO dto = service.selectPerson(id);
+        model.addAttribute("dto", dto);
+        return "select";
+    }
+
+    /**
+     * 모든 회원 목록 보기
+     * @return 회원목록 출력 HTML
+     */
+    @GetMapping("selectAll")
+    public String selectAll(Model model) {
+        List<PersonDTO> list = service.selectAll();
+        model.addAttribute("list", list);
+        return "selectAll";
     }
 
 }
