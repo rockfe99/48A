@@ -1,5 +1,6 @@
 package net.datasa.web3.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web3.dto.PersonDTO;
@@ -32,7 +33,7 @@ public class PersonService {
         entity.setName("이영희");
         entity.setAge(30);
 
-        repository.save(entity);
+        PersonEntity entity2 = repository.save(entity);
     }
 
     public void insertPerson(PersonDTO dto) {
@@ -83,5 +84,16 @@ public class PersonService {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    public void updatePerson(PersonDTO dto) {
+        PersonEntity entity = repository.findById(dto.getId())
+           .orElseThrow(()
+               -> new EntityNotFoundException("수정할 정보가 없습니다."));
+
+        //영속성. 영속상태인 객체. 변경 감지 상태
+        entity.setName(dto.getName());
+        entity.setAge(dto.getAge());
+
     }
 }

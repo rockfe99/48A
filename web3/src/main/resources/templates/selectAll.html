@@ -3,10 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>회원목록</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 30px;
+        }
+        th {
+            border: 1px solid black;
+            background-color: lightgray;
+            text-weight: bold;
+            width: 100px;
+        }
+        td {
+            border: 1px solid black;
+            width: 100px;
+            padding: 5px;
+        }
+    </style>
+
+    <script>
+        function deletePerson(id) {
+            if (confirm('삭제하시겠습니까?')) {
+                location.href = 'delete?id=' + id;
+            }
+        }
+
+        function deletePerson2(bt) {
+            //alert(bt.dataset.id);
+        }
+    </script>
 </head>
 <body>
 
-[[${list}]]
+<div>[[${list}]]</div>
+
+<table>
+    <tr>
+        <th>번호</th>
+        <th>아이디</th>
+        <th>이름</th>
+        <th>나이</th>
+    </tr>
+    <tr th:if="${list == null or list.isEmpty()}">
+        <td colspan="3">조회 결과가 없습니다.</td>
+    </tr>
+    <tr th:if="${list}" th:each="person , status : ${list}">
+        <td th:text="${status.count}"></td>
+        <td>
+            <a th:href="|select?id=${person.id}|">
+                <span th:text="${person.id}"></span>
+            </a>
+
+            <a th:href="@{select?id={viewid}(viewid=${person.id})}"
+               th:text="${person.id}">
+            </a>
+        </td>
+        <td th:text="${person.name}"></td>
+        <td th:text="${person.age}"></td>
+        <td>
+            <a th:href="|delete?id=${person.id}|">
+                삭제
+            </a>
+            <a th:href="|javascript:deletePerson('${person.id}')|">
+                삭제
+            </a>
+            <button th:data-id="${person.id}" onclick="deletePerson2(this)">
+                삭제
+            </button>
+        </td>
+        <td>
+            <a th:href="|update?id=${person.id}|">수정</a>
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+<table>
+    <tr th:if="${list}" th:each="person , status : ${list}" th:object="${person}">
+        <td th:text="${status.count}"></td>
+        <td th:text="*{id}"></td>
+        <td th:text="*{name}"></td>
+        <td th:text="*{age}"></td>
+    </tr>
+</table>
 
 </body>
 </html>

@@ -73,4 +73,24 @@ public class PersonController {
         return "selectAll";
     }
 
+    @GetMapping("update")
+    public String update (Model model,
+                          @RequestParam("id") String id) {
+        //Model과 요청파라미터 id를 전달받는다.
+        //서비스에 id를 전달하여 회원정보를 조회한다
+        PersonDTO dto = service.selectPerson(id);
+        //회원정보를 Model에 저장하고 html로 포워딩
+        model.addAttribute("person", dto);
+        return "update";
+    }
+
+
+    @PostMapping("update")
+    public String update(@ModelAttribute PersonDTO dto) {
+        log.debug("전달된 값 : {}", dto);
+
+        service.updatePerson(dto);
+        return "redirect:selectAll";
+    }
+
 }

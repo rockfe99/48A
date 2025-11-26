@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>수정</title>
+</head>
+<body>
+    <h1>[ 회원정보 수정 ]</h1>
+<!--    이름, 나이를 새로 입력받아서  /update 경로로 전달-->
+    <form th:action="@{/update}" method="post">
+        <input type="hidden" name="id" th:value="${person.id}">
+        이름 <input type="text" name="name" th:value="${person.name}"><br>
+        나이 <input type="number" name="age" th:value="${person.age}"><br>
+        <button type="submit">저장하기</button>
+    </form>
+</body>
+</html>
