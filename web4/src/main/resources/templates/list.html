@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>web4</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h1>방명록</h1>
+<!-- 글쓰기 링크 -->
+<p>
+    <a th:href="@{/write}">
+        <span>글쓰기</span>
+    </a>
+</p>
+
+<!-- 글 목록 출력 -->
+<table th:each="gb: ${guestbookList}" class="list">
+    <tr>
+        <th>번호 : </th>
+        <td th:text="${gb.num}">번호</td>
+    </tr>
+    <tr>
+        <th>작성자 : </th>
+        <td th:text="${gb.name}">이름</td>
+    </tr>
+    <tr>
+        <th>작성일 : </th>
+        <td th:text="${#temporals.format(gb.inputdate, 'yy.MM.dd HH:mm:ss')}">작성일</td>
+    </tr>
+    <tr>
+        <td colspan="2"><pre th:text="${gb.message}">글내용</pre></td>
+    </tr>
+</table>
+
+</body>
+</html>

@@ -6,9 +6,13 @@ import net.datasa.web4.dto.GuestbookDTO;
 import net.datasa.web4.service.GuestbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 /**
  * 방명록 콘트롤러
@@ -43,5 +47,16 @@ public class GuestbookController {
         return "redirect:/";
     }
 
+    /**
+     * 전체 글 보기
+     * @param model
+     * @return HTML 파일 경로
+     */
+    @GetMapping("list")
+    public String list(Model model) {
+        List<GuestbookDTO> dtoList = service.getList();
+        model.addAttribute("guestbookList", dtoList);
+        return "list";
+    }
 
 }

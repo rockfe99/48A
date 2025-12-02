@@ -6,7 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.datasa.web4.dto.GuestbookDTO;
 import net.datasa.web4.entity.GuestbookEntity;
 import net.datasa.web4.repository.GuestbookRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -37,5 +41,26 @@ public class GuestbookService {
         repository.save(entity);
     }
 
+    /**
+     * 방명록 글을 모두 조회.
+     * @return 방명록 글 목록
+     */
+    public List<GuestbookDTO> getList() {
+        //정렬 기준
+        Sort sort = Sort.by(Sort.Direction.DESC, "num");
+        List<GuestbookEntity> entityList = repository.findAll(sort);
+        List<GuestbookDTO> dtoList = new ArrayList<GuestbookDTO>();
 
+        for (GuestbookEntity entity : entityList) {
+            GuestbookDTO dto = GuestbookDTO.builder()
+                    .num(entity.getNum())
+                    .name(entity.getName())
+                    .password(entity.getPassword())
+                    .message(entity.getMessage())
+                    .inputdate(entity.getInputdate())
+                    .build();
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
 }
