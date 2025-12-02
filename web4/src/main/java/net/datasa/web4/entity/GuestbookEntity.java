@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,8 @@ public class GuestbookEntity {
     private String password;
     @Column(name="message", nullable = false, columnDefinition = "text")
     private String message;
+
+    @CreatedDate
     @Column
     private LocalDateTime inputdate;
 }
