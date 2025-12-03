@@ -31,7 +31,26 @@
     <tr>
         <td colspan="2"><pre th:text="${gb.message}">글내용</pre></td>
     </tr>
+    <tr>
+        <td colspan="2">
+            <!-- 삭제 -->
+            <form action="delete" method="post">
+                <input type="hidden" name="num" th:value="${gb.num}">
+                <input type="password" name="password">
+                <input type="submit" value="삭제">
+            </form>
+            <!-- 수정 : location.href='update?num=1' -->
+            <input type="button" value="수정"
+                   th:onclick="|location.href='update?num=${gb.num}'|">
+        </td>
+    </tr>
 </table>
+
+<script>
+    if ('[[${msg}]]') {
+        alert('[[${msg}]]');
+    }
+</script>
 
 </body>
 </html>

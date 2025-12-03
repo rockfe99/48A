@@ -1,5 +1,6 @@
 package net.datasa.web4.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,7 @@ public class GuestbookService {
         List<GuestbookEntity> entityList = repository.findAll(sort);
         List<GuestbookDTO> dtoList = new ArrayList<GuestbookDTO>();
 
+
         for (GuestbookEntity entity : entityList) {
             GuestbookDTO dto = GuestbookDTO.builder()
                     .num(entity.getNum())
@@ -62,5 +64,24 @@ public class GuestbookService {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    /**
+     * 번호와 비밀번호를 전달받아 글을 삭제
+     * @param dto 글번호와 비밀번호가 포함된 DTO객체
+     * @throws EntityNotFoundException 해당 번호의 글이 없을때
+     * @throws RuntimeException 비밀번호가 틀릴 때
+     */
+    public void delete(GuestbookDTO dto) {
+        //기본키 조건으로 하나의 정보 읽기. 없으면 예외 발생
+        GuestbookEntity entity = repository.findById(dto.getNum())
+            .orElseThrow(() -> new EntityNotFoundException("글이 없습니다."));
+
+        //비번 확인. 틀리면 예외발생
+        if (!dto.getPassword().equals(entity.getPassword())) {
+            throw new RuntimeException("비밀번호가 틀립니다.");
+        }
+        //글 삭제
+        repository.delete(entity);
     }
 }
