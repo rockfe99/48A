@@ -45,4 +45,10 @@ public class GuestbookEntity {
     @CreatedDate
     @Column
     private LocalDateTime inputdate;
+
+    @Column
+    private Integer recommend;
+
+    @Column
+    private String ip;
 }

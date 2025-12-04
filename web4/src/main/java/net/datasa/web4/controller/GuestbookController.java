@@ -1,6 +1,7 @@
 package net.datasa.web4.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web4.dto.GuestbookDTO;
@@ -18,7 +19,6 @@ import java.util.List;
  * 방명록 콘트롤러
  * @since 25.12.01
  */
-@RequestMapping("book")
 @RequiredArgsConstructor
 @Slf4j
 @Controller
@@ -42,10 +42,13 @@ public class GuestbookController {
      * @return
      */
     @PostMapping("write")
-    public String write(@ModelAttribute GuestbookDTO dto) {
+    public String write(@ModelAttribute GuestbookDTO dto,
+        HttpServletRequest request) {
         log.debug("{}", dto);
+        log.debug("{}", request.getRemoteAddr());
+        dto.setIp(request.getRemoteAddr());
         service.write(dto);
-        return "redirect:/";
+        return "redirect:list";
     }
 
     /**
@@ -106,6 +109,18 @@ public class GuestbookController {
             redirectAttributes.addFlashAttribute("msg", e.getMessage());
         }
 
+        return "redirect:list";
+    }
+
+    /**
+     * 게시글 추천
+     * @param num 추천할 글 번호
+     * @return 글목록 보기 경로
+     */
+    @GetMapping("recommend")
+    public String recommend(@RequestParam("num") Integer num) {
+        log.debug("추천 글번호 : {}" , num);
+        service.recommend(num);
         return "redirect:list";
     }
 

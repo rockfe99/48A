@@ -17,4 +17,6 @@ public class GuestbookDTO {
     private String password;
     private String message;
     private LocalDateTime inputdate;
+    private Integer recommend;
+    private String ip;
 }

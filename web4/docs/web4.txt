@@ -1,0 +1,36 @@
+[ web4 - 방명록 예제 ]
+
+SpringBoot, JPA, MySQL, Thymeleaf
+HTML, CSS, JavaScript
+
+- 글 쓰기
+- 전체 글 보기
+- 삭제
+- 수정
+
+* 저장날짜의 자동 처리
+1. 환경설정 클래스 또는 main() 포함된 클래스에
+    @EnableJpaAuditing
+2. Entity 클래스에
+    @EntityListeners(AuditingEntityListener.class)
+3. 날짜/시간 변수에
+    @CreatedDate
+
+
+[ web4 예제에 추가 ]
+작성자의 IP를 글 정보에 추가
+추천기능
+
+-- 테이블 수정 SQL
+ALTER TABLE guestbook
+ADD COLUMN recommend INT DEFAULT 0,
+ADD COLUMN ip VARCHAR(30);
+
+[ 그 외의 기능 추가 ]
+신고기능 (추천수 기능과 동일)
+신고수가 일정 값 이상이 되면 자동 삭제 또는 블라인드 처리
+IP 차단 (테이블에 저장하고 글 쓰기 금지 또는 읽기 페이지 진입 금지) -> 나중에 인터셉터의 사용으로.
+
+
+
+

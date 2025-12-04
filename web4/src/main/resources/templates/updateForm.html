@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>web4</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script>
+        function formSubmit() {
+            let password = document.getElementById('password');
+            let message = document.getElementById('message');
+
+            if (password.value === '') {
+                alert('비밀번호를 입력하세요. ');
+                password.focus();
+                return false;
+            }
+            if (message.value.length < 5) {
+                alert('내용을 5자 이상 입력하세요.');
+                message.focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+
+<h1>[ 방명록 글쓰기 ]</h1>
+
+<form id="form" action="update" method="post" onsubmit="return formSubmit()" th:object="${guestbook}">
+    <input type="hidden" name="num" th:value="*{num}">
+    <table class="writeForm">
+        <tr>
+            <th>입력시 지정한 비밀번호</th>
+            <td><input type="password" name="password" id="password"></td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td><textarea name="message" id="message" th:text="*{message}"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">저장</button></td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>

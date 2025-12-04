@@ -10,6 +10,7 @@
 <!-- 글쓰기 링크 -->
 <p>
     <a th:href="@{/write}">
+        <img th:src="@{/images/icon_write.png}">
         <span>글쓰기</span>
     </a>
 </p>
@@ -25,6 +26,14 @@
         <td th:text="${gb.name}">이름</td>
     </tr>
     <tr>
+        <th>IP Address : </th>
+        <td th:text="${gb.ip}">IP Address</td>
+    </tr>
+    <tr>
+        <th>추천 : </th>
+        <td th:text="${gb.recommend}">0</td>
+    </tr>
+    <tr>
         <th>작성일 : </th>
         <td th:text="${#temporals.format(gb.inputdate, 'yy.MM.dd HH:mm:ss')}">작성일</td>
     </tr>
@@ -38,10 +47,13 @@
                 <input type="hidden" name="num" th:value="${gb.num}">
                 <input type="password" name="password">
                 <input type="submit" value="삭제">
+                <input type="button" value="수정"
+                   th:onclick="|location.href='update?num=${gb.num}'|">
+                <a th:href="|recommend?num=${gb.num}|">
+                    <img src="images/icon_like_50.png" title="추천하기">
+                </a>
             </form>
             <!-- 수정 : location.href='update?num=1' -->
-            <input type="button" value="수정"
-                   th:onclick="|location.href='update?num=${gb.num}'|">
         </td>
     </tr>
 </table>

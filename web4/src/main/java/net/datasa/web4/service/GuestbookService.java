@@ -26,17 +26,21 @@ public class GuestbookService {
      * @param dto 저장할 글 정보 (이름, 비번, 내용)
      */
     public void write(GuestbookDTO dto) {
-        //1. 기본생성자로 생성 후 값 세팅
-        //GuestbookEntity entity = new GuestbookEntity();
-        //entity.setName(dto.getName());
-        //2. 모든 값을 전달받는 생성자를 이용해서 생성
-        //GuestbookEntity entity2 = new GuestbookEntity(
-        // 0, dto.getName(), dto.getPassword(), dto.getMessage(), null);
-        //3. 빌더를 이용해서 생성
+        /*
+         * 객체를 생성할 때
+            1. 기본생성자로 생성 후 값 세팅
+                GuestbookEntity entity = new GuestbookEntity();
+                entity.setName(dto.getName());
+            2. 모든 값을 전달받는 생성자를 이용해서 생성
+                GuestbookEntity entity2 = new GuestbookEntity(0, dto.getName(), dto.getPassword(), dto.getMessage(), null);
+            3. 빌더를 이용해서 생성
+         */
         GuestbookEntity entity = GuestbookEntity.builder()
                 .name(dto.getName())
                 .password(dto.getPassword())
                 .message(dto.getMessage())
+                .recommend(0)
+                .ip(dto.getIp())
                 .build();
 
         repository.save(entity);
@@ -52,7 +56,6 @@ public class GuestbookService {
         List<GuestbookEntity> entityList = repository.findAll(sort);
         List<GuestbookDTO> dtoList = new ArrayList<GuestbookDTO>();
 
-
         for (GuestbookEntity entity : entityList) {
             GuestbookDTO dto = GuestbookDTO.builder()
                     .num(entity.getNum())
@@ -60,6 +63,8 @@ public class GuestbookService {
                     .password(entity.getPassword())
                     .message(entity.getMessage())
                     .inputdate(entity.getInputdate())
+                    .recommend(entity.getRecommend())
+                    .ip(entity.getIp())
                     .build();
             dtoList.add(dto);
         }
@@ -83,5 +88,56 @@ public class GuestbookService {
         }
         //글 삭제
         repository.delete(entity);
+    }
+
+    /**
+     * 글번호를 전달받아 해당 글을 조회한다.
+     * @param num 조회할 글 번호
+     * @return 전달된 번호의 글 정보
+     */
+    public GuestbookDTO get(Integer num) {
+        GuestbookEntity entity = repository.findById(num)
+                .orElseThrow(() -> new EntityNotFoundException(num + "번 글이 없습니다."));
+
+        GuestbookDTO dto = GuestbookDTO.builder()
+                .num(entity.getNum())
+                .name(entity.getName())
+                .password(entity.getPassword())
+                .message(entity.getMessage())
+                .inputdate(entity.getInputdate())
+                .recommend(entity.getRecommend())
+                .ip(entity.getIp())
+                .build();
+        return dto;
+    }
+
+    /**
+     * 비밀번호가 일치하면 글 수정
+     * @param dto 글번호, 비밀번호, 수정한 내용
+     */
+    public void update(GuestbookDTO dto) {
+        GuestbookEntity entity = repository.findById(dto.getNum())
+                .orElseThrow(() -> new EntityNotFoundException(dto.getNum() + "번 글이 없습니다."));
+
+        if (!entity.getPassword().equals(dto.getPassword())) {
+            throw new RuntimeException("비밀번호가 틀립니다.");
+        }
+        entity.setMessage(dto.getMessage());
+    }
+
+    /**
+     * 게시글 추천
+     * @param num 추천할 글번호
+     */
+    public void recommend(Integer num) {
+        //Entity와 DTO를 수정된 테이블에 맞춰서 변수 추가
+        //전달된 글번호로 글정보 조회
+        //현재 조회수 읽어서 더하기 1
+        //게시글의 조회수를 수정
+        GuestbookEntity entity = repository.findById(num)
+                .orElseThrow(() -> new EntityNotFoundException(num + "번 글이 없습니다."));
+
+        Integer recommend = entity.getRecommend() == null? 0 : entity.getRecommend();
+        entity.setRecommend(recommend + 1);
     }
 }
