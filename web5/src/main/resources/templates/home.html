@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>web5</title>
+</head>
+<body>
+	<h1>[ web5 ]</h1>
+
+    <ul>
+        <li><a th:href="@{/member/join}">회원가입</a></li>
+        <li><a th:href="@{/member/login}">로그인</a></li>
+        <li><a th:href="@{/member/logout}">로그아웃</a></li>
+        <li><a th:href="@{/member/info}">개인정보 수정</a></li>
+        <li><a th:href="@{/board/list}">게시판</a></li>
+	</ul>
+
+</body>
+</html>
