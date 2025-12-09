@@ -1,4 +1,4 @@
-package net.datasa.web5.domain.dto;
+package net.datasa.web5.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

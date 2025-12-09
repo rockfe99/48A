@@ -1,0 +1,127 @@
+@charset "UTF-8";
+
+header {
+	margin: auto;
+	text-align: center;
+}
+section {
+	margin: auto;
+	text-align: center;
+}
+a:link {
+	color:#000000;
+	text-decoration: none;
+}
+a:visited {
+	color:#000000;
+	text-decoration: none;
+}
+a:hover {
+	color:#ff0000;
+	text-decoration: underline;
+}
+
+/* 이미지 */
+img {
+	vertical-align: middle;
+}
+
+/* 게시판 관련 */
+textarea {
+	 width:400px;
+	 height:200px;
+	 resize:none;
+}
+table {
+	margin: auto;
+}
+
+tr.hover {
+	background-color: #cccccc;
+}
+
+th {
+	width:100px;
+	height: 30px;
+	background-color: #cccccc;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 10px;
+}
+td {
+	padding: 3px;
+	background-color: #eeeeee;
+	text-align: left;
+}
+
+td.white {
+	background-color: #ffffff;
+}
+td.head {
+	background-color: #ffffff;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+/* 게시판 가운데 정렬 열 */
+.center {
+	text-align: center;
+}
+
+/* 게시판 본문 */
+pre {
+	font-size: 12pt;
+}
+
+/* 게시판 하단 */
+#navigator {
+	width: 600px;
+	text-align: center;
+	margin: auto;
+	margin-top: 20px;
+}
+
+/* 리플 폼 영역 */
+#replyForm {
+	width: 600px;
+	height: 50px;
+	text-align: center;
+}
+
+/* 리플 목록 출력 표 */
+table.reply {
+	border-style: none;
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+
+td.replyid {
+	width: 100px;
+	padding-left: 10px;
+	border-style: none;
+	background-color: #dddddd;
+	font-weight: bold;
+}
+td.replytext {
+	width: 470px;
+	border-style: none;
+}
+td.replydate {
+	width: 100px;
+	border-style: none;
+	font-size: 10pt;
+	text-align: center;
+}
+td.replybutton {
+	width: 70px;
+	border-style: none;
+	font-size: 10pt;
+	text-align: center;	
+}
+
+/* 에러 메시지 출력 */
+.errorMsg {
+	color: red;
+	font-size: 12px;
+	background-color: #ffffff;
+}
