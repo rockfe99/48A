@@ -18,4 +18,8 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("test")
+    public String test() {
+        return "test";
+    }
 }

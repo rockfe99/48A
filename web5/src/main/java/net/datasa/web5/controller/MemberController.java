@@ -3,9 +3,13 @@ package net.datasa.web5.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web5.dto.MemberDTO;
+import net.datasa.web5.security.AuthenticatedUser;
 import net.datasa.web5.service.MemberService;
+import org.apache.catalina.users.AbstractUser;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,4 +56,30 @@ public class MemberController {
         memberService.join(member);
         return "redirect:/";
     }
+
+    /**
+     * 개인정보 수정폼으로 이동
+     * 로그인정보를 확인하고, ID로 개인정보 조회 후 Model에 저장
+     * @return 수정 폼 HTML파일 경로
+     */
+    @GetMapping("info")
+    public String info(@AuthenticationPrincipal AuthenticatedUser user
+            , Model model) {
+
+        MemberDTO dto = memberService.getMember(user.getUsername());
+        model.addAttribute("member", dto);
+        return "memberView/info";
+    }
+
+    /**
+     * 개인정보 수정 처리
+     */
+    @PostMapping("info")
+    public String info(@AuthenticationPrincipal AuthenticatedUser user, @ModelAttribute MemberDTO member) {
+        log.debug("수정할 정보 : {}", member);
+        member.setMemberId(user.getUsername());
+        memberService.updateMember(member);
+        return "redirect:/";
+    }
+
 }

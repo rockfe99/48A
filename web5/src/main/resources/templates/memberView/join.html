@@ -6,6 +6,42 @@
 	<meta charset="UTF-8">
 	<title>회원가입</title>
 	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <script>
+        function formCheck() {
+            let id = document.getElementById('memberId');
+            let name = document.getElementById('memberName');
+            let pw = document.getElementById('memberPassword');
+            let pw2 = document.getElementById('memberPassword2');
+
+            if (id.value.length < 3 || id.value.length > 10) {
+                alert('ID는 3~10자로 입력하세요.');
+                id.focus();
+                id.select();
+                return false;
+            }
+
+            if (name.value.length < 2) {
+                alert('이름을 2자 이상 입력하세요.');
+                name.focus();
+                name.select();
+                return false;
+            }
+            if (pw.value.length < 3 || pw.value.length > 10) {
+                alert('비밀번호는 3~10자로 입력하세요.');
+                pw.focus();
+                pw.select();
+                return false;
+            }
+            if (pw.value != pw2.value) {
+                alert('비밀번호를 정확하게 다시 입력하세요.');
+                pw.focus();
+                pw.select();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
 	<header>
@@ -13,7 +49,7 @@
 	</header>
 	
 	<section>
-	<form id="joinform" th:action="@{/member/join}"  method="post">
+	<form th:action="@{/member/join}"  method="post" onsubmit="return formCheck()">
 	<table>
 		<tr>
 			<th>ID</th>

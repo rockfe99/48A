@@ -8,14 +8,28 @@
 </head>
 <body>
 	<h1>[ web5 ]</h1>
+    <!--/* 로그인한 경우에만 출력.
+            authentication : 인증정보 객체
+            name 속성 : 사용자 ID */-->
+    <p sec:authorize="isAuthenticated()">
+        <span th:text="${#authentication.name}"></span>님 로그인 중
+    </p>
 
     <ul>
-        <li><a th:href="@{/member/join}">회원가입</a></li>
-        <li><a th:href="@{/member/login}">로그인</a></li>
-        <li><a th:href="@{/member/logout}">로그아웃</a></li>
-        <li><a th:href="@{/member/info}">개인정보 수정</a></li>
+        <!--/* 로그인하지 않았을 때만 출력 */-->
+        <th:block sec:authorize="not isAuthenticated()">
+            <li><a th:href="@{/member/join}">회원가입</a></li>
+            <li><a th:href="@{/member/login}">로그인</a></li>
+        </th:block>
+        <!--/* 로그인했을때만 출력 */-->
+        <th:block sec:authorize="isAuthenticated()">
+            <li><a th:href="@{/member/logout}">로그아웃</a></li>
+            <li><a th:href="@{/member/info}">개인정보 수정</a></li>
+        </th:block>
+        <!--/* 로그인 여부에 상관없이 출력 */-->
         <li><a th:href="@{/board/list}">게시판</a></li>
-	</ul>
+        <li><a th:href="@{/test}">로그인 안해도 들어갈 수 있는 페이지</a></li>
+    </ul>
 
 </body>
 </html>

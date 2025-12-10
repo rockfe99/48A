@@ -22,6 +22,7 @@ public class WebSecurityConfig {
             , "/css/**"             //CSS파일들
             , "/js/**"              //JavaSCript 파일들
             , "/member/join"        //회원가입
+            , "/test"
     };
 
     @Bean
@@ -31,7 +32,8 @@ public class WebSecurityConfig {
                 .requestMatchers(PUBLIC_URLS).permitAll()
                 .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults())
+            //.httpBasic(Customizer.withDefaults())
+            .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(formLogin -> formLogin
                     .loginPage("/member/login")
                     .usernameParameter("id")
