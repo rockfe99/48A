@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>web5</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+</head>
+<body>
+<header>
+    <h1>[ 회원 목록 ]</h1>
+</header>
+
+<section>
+    <table>
+        <tr>
+            <th class="center">번호</th>
+            <th>ID</th>
+            <th>이름</th>
+            <th style="width:150px;">이메일</th>
+            <th style="width:150px;">전화번호</th>
+            <th style="width:150px;">주소</th>
+        </tr>
+
+        <!-- memberList : List<MemberDTO> -->
+        <tr th:each="member, stat : ${memberList}">
+            <td class="center" th:text="${stat.count}">1</td>
+            <td th:text="${member.memberId}">userid</td>
+            <td th:text="${member.memberName}">홍길동</td>
+            <td th:text="${member.email}">email@example.com</td>
+            <td th:text="${member.phone}">010-0000-0000</td>
+            <td th:text="${member.address}">서울시 어딘가</td>
+        </tr>
+
+        <!-- 회원이 한 명도 없을 때 -->
+        <tr th:if="${#lists.isEmpty(memberList)}">
+            <td class="center" colspan="8">등록된 회원이 없습니다.</td>
+        </tr>
+    </table>
+</section>
+
+</body>
+</html>

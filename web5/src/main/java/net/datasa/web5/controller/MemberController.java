@@ -3,6 +3,7 @@ package net.datasa.web5.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web5.dto.MemberDTO;
+import net.datasa.web5.entity.MemberEntity;
 import net.datasa.web5.security.AuthenticatedUser;
 import net.datasa.web5.service.MemberService;
 import org.apache.catalina.users.AbstractUser;
@@ -10,10 +11,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 회원정보 관련 콘트롤러
@@ -81,5 +82,43 @@ public class MemberController {
         memberService.updateMember(member);
         return "redirect:/";
     }
+
+    /**
+     * ID 중복확인 창 열기
+     * @return
+     */
+    @GetMapping("idCheck")
+    public String idCheck() {
+        return "memberView/idCheck";
+    }
+
+    /**
+     * ID 중복확인 처리
+     * @param searchId 조회할 아이디
+     * @param model
+     * @return
+     */
+    @PostMapping("idCheck")
+    public String idCheck(@RequestParam("searchId") String searchId, Model model) {
+        log.debug("조회할 ID : {}", searchId);
+
+        //서비스로 ID를 전달하여 사용해도 되는지(true), 안되는지(false) 리턴
+        boolean result = memberService.idCheck(searchId);
+
+        model.addAttribute("searchId", searchId);
+        model.addAttribute("result", result);
+
+        return "memberView/idCheck";
+    }
+
+
+    @GetMapping("search")
+    public String search(Model model) {
+        List<MemberDTO> list = memberService.search();
+        model.addAttribute("memberList", list);
+        return "memberView/search";
+    }
+
+
 
 }

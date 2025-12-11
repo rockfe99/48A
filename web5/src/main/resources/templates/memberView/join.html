@@ -41,6 +41,11 @@
 
             return true;
         }
+
+        //ID중복확인 창 열기
+        function windowOpen() {
+            window.open('idCheck','win','top=200,left=700,width=400,height=300');
+        }
     </script>
 </head>
 <body>
@@ -54,8 +59,8 @@
 		<tr>
 			<th>ID</th>
 			<td>
-				<input type="text" name="memberId" id="memberId" maxlength="10" placeholder="ID중복확인 이용">
-				<input type="button" id="openButton" value="ID중복확인">
+				<input type="text" name="memberId" id="memberId" maxlength="10" placeholder="ID중복확인 이용" readonly>
+				<input type="button" id="openButton" value="ID중복확인" onclick="windowOpen()">
 			</td>
 		</tr>
 		<tr>

@@ -9,6 +9,10 @@ import net.datasa.web5.repository.MemberRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 회원정보 서비스
  */
@@ -83,6 +87,65 @@ public class MemberService {
         entity.setAddress(dto.getAddress());
 
         memberRepository.save(entity);
+    }
+
+    /**
+     * 신규 가입 시 ID를 사용해도 되는지 조회
+     * @param searchId  조회할 아이디
+     * @return          사용가능 여부. 가능한 경우 true
+     */
+    public boolean idCheck(String searchId) {
+        return !memberRepository.existsById(searchId);
+    }
+
+    //임시: 회원목록 전체 조회
+    public List<MemberDTO> search() {
+        List<MemberEntity> entityList = memberRepository.findAll();
+        List<MemberDTO> dtoList = new ArrayList<>();
+        MemberDTO dto = null;
+
+        for (MemberEntity entity : entityList) {
+            dtoList.add(entityToDto(entity));
+        }
+        return dtoList;
+    }
+
+    /**
+     * MemberEntity를 MemberDTO로 변환
+     * @param entity 원본 엔티티 객체
+     * @return       사본 DTO 객체
+     */
+    public MemberDTO entityToDto(MemberEntity entity) {
+        MemberDTO dto = MemberDTO.builder()
+                .memberId(entity.getMemberId())
+                .memberPassword(entity.getMemberPassword())
+                .memberName(entity.getMemberName())
+                .email(entity.getEmail())
+                .phone(entity.getPhone())
+                .address(entity.getAddress())
+                .enabled(entity.getEnabled())
+                .rolename(entity.getRolename())
+                .build();
+        return dto;
+    }
+
+    /**
+     * MemberDTO를 MemberEntity로 변환
+     * @param dto       원본 DTO 객체
+     * @return          사본 Entity 객체
+     */
+    public MemberEntity dtoToEntity(MemberDTO dto) {
+        MemberEntity entity = MemberEntity.builder()
+                .memberId(dto.getMemberId())
+                .memberPassword(dto.getMemberPassword())
+                .memberName(dto.getMemberName())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .enabled(dto.getEnabled())
+                .rolename(dto.getRolename())
+                .build();
+        return entity;
     }
 
 }

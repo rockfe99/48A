@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>web5</title>
+    <script>
+        function inputId(bt) {
+            //회원가입창의 ID입력란의 id를 찾아서 검색한 아이디 대입
+            let id = bt.dataset.id;
+            opener.document.getElementById('memberId').value = id;
+            window.close();
+        }
+    </script>
+</head>
+<body>
+    <h1>[ ID 중복 확인 ]</h1>
+
+    <form action="idCheck" method="post">
+        <input type="text" name="searchId">
+        <input type="submit" value="검색">
+    </form>
+
+<!--  Model에 result가 없으면 검색 전   -->
+<div th:if="${result != null}">
+    <!-- result가 false이면 사용불가 -->
+    <div th:if="${not result}">
+        <p><span th:text="${searchId}"></span> : 이미 사용중인 ID입니다.</p>
+    </div>
+    <!-- result가 true이면 사용가능 -->
+    <div th:if="${result}">
+        <p><span th:text="${searchId}"></span> : 사용가능한 ID입니다.</p>
+        <!--<p><input type="button" value="사용하기" th:onclick="|inputId('${searchId}')|"></p>-->
+        <p><input type="button" value="사용하기" th:data-id="${searchId}" onclick="inputId(this)"></p>
+    </div>
+</div>
+</body>
+</html>
