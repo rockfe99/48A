@@ -111,12 +111,45 @@ public class MemberController {
         return "memberView/idCheck";
     }
 
-
+    /**
+     * 회원 검색 페이지로 이동
+     * @return
+     */
     @GetMapping("search")
-    public String search(Model model) {
-        List<MemberDTO> list = memberService.search();
-        model.addAttribute("memberList", list);
+    public String search() {
         return "memberView/search";
+    }
+
+    /**
+     * 전달된 이름과 일치하는 회원 조회
+     * @param name      조회할 회원이름
+     * @param model
+     * @return          이름이 일치하는 회원목록
+     */
+    @PostMapping("searchName")
+    public String searchName(@RequestParam("searchName") String name, Model model) {
+        log.debug("검색할 이름 : {}", name);
+        List<MemberDTO> memberList = memberService.searchByName(name);
+
+        model.addAttribute("searchName", name);
+        model.addAttribute("memberList", memberList);
+        return "/memberView/search";
+    }
+
+    /**
+     * 전달된 조건에 해당하는 회원 조회
+     * @param searchMember      조회할 조건
+     * @param model
+     * @return                  조회결과 회원목록
+     */
+    @PostMapping("search")
+    public String search(@ModelAttribute MemberDTO searchMember, Model model) {
+        log.debug("검색할 조건 : {}", searchMember);
+        List<MemberDTO> memberList = memberService.search(searchMember);
+
+        model.addAttribute("searchMember", searchMember);
+        model.addAttribute("memberList", memberList);
+        return "/memberView/search";
     }
 
 

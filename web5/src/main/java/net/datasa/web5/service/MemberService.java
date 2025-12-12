@@ -111,6 +111,39 @@ public class MemberService {
     }
 
     /**
+     * 이름으로 회원 검색
+     * @param name 검색할 이름
+     * @return 이름이 같은 회원목록
+     */
+    public List<MemberDTO> searchByName(String name) {
+
+        List<MemberEntity> entityList = memberRepository.findAllByMemberName(name);
+        List<MemberDTO> dtoList = new ArrayList<>();
+
+        for (MemberEntity entity : entityList) {
+            dtoList.add(entityToDto(entity));
+        }
+        return dtoList;
+    }
+
+
+    /**
+     * 전달된 조건에 해당하는 회원 조회
+     * @param searchMember 이름, 이메일, 전화번호 등 검색 조건
+     * @return              조건에 맞는 회원 목록
+     */
+    public List<MemberDTO> search(MemberDTO searchMember) {
+        List<MemberEntity> entityList = memberRepository.findAllByMemberNameContainingAndEmailContainingAndPhoneContaining(
+                searchMember.getMemberName(), searchMember.getEmail(), searchMember.getPhone());
+        List<MemberDTO> dtoList = new ArrayList<>();
+
+        for (MemberEntity entity : entityList) {
+            dtoList.add(entityToDto(entity));
+        }
+        return dtoList;
+    }
+
+    /**
      * MemberEntity를 MemberDTO로 변환
      * @param entity 원본 엔티티 객체
      * @return       사본 DTO 객체

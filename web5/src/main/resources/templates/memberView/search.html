@@ -4,41 +4,83 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>web5</title>
+    <title>회원검색</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <style>
+        /* 검색폼 영역 */
+        div.search {
+            width: 600px;
+            margin: 15px auto;
+            text-align: left;
+            padding : 10px;
+            border: 1px solid #cccccc;
+        }
+        div.search input[type="text"] {
+            width: 90px;
+        }
+        div.result {
+            width: 800px;
+            margin: 15px auto;
+        }
+
+    </style>
 </head>
 <body>
 <header>
-    <h1>[ 회원 목록 ]</h1>
+    <h1>[ 회원검색 ]</h1>
 </header>
 
 <section>
-    <table>
+    <!-- 검색 폼 - 이름이 일치하는 회원 검색 -->
+    <div class="search">
+        <form id="searchNameForm" th:action="@{/member/searchName}"  method="post">
+            이름    <input type="text" name="searchName" th:value="${searchName}">
+            <button type="submit">검색</button>
+        </form>
+    </div>
+</section>
+<div class="search">
+    <form id="searchForm" th:action="@{/member/search}"  method="post">
+        이름
+        <input type="text" name="memberName"
+               th:value="${searchMember != null ? searchMember.memberName : ''}">
+
+        이메일
+        <input type="text" name="email"
+               th:value="${searchMember != null ? searchMember.email : ''}">
+
+        전화번호
+        <input type="text" name="phone"
+               th:value="${searchMember != null ? searchMember.phone : ''}">        <button type="submit">검색</button>
+    </form>
+</div>
+
+<!-- 검색 결과 -->
+<div class="result">
+    <div th:if="${memberList != null && memberList.isEmpty()}">
+        <p>검색 결과가 없습니다.</p>
+    </div>
+
+    <table th:if="${memberList != null && !memberList.isEmpty()}">
         <tr>
             <th class="center">번호</th>
             <th>ID</th>
             <th>이름</th>
             <th style="width:150px;">이메일</th>
             <th style="width:150px;">전화번호</th>
-            <th style="width:150px;">주소</th>
+            <th style="width:200px;">주소</th>
         </tr>
 
-        <!-- memberList : List<MemberDTO> -->
         <tr th:each="member, stat : ${memberList}">
-            <td class="center" th:text="${stat.count}">1</td>
-            <td th:text="${member.memberId}">userid</td>
-            <td th:text="${member.memberName}">홍길동</td>
-            <td th:text="${member.email}">email@example.com</td>
-            <td th:text="${member.phone}">010-0000-0000</td>
-            <td th:text="${member.address}">서울시 어딘가</td>
-        </tr>
-
-        <!-- 회원이 한 명도 없을 때 -->
-        <tr th:if="${#lists.isEmpty(memberList)}">
-            <td class="center" colspan="8">등록된 회원이 없습니다.</td>
+            <td class="center" th:text="${stat.count}"></td>
+            <td th:text="${member.memberId}"></td>
+            <td th:text="${member.memberName}"></td>
+            <td th:text="${member.email}"></td>
+            <td th:text="${member.phone}"></td>
+            <td th:text="${member.address}"></td>
         </tr>
     </table>
+</div>
 </section>
-
 </body>
 </html>
