@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>web5</title>
+</head>
+<body>
+	<h1>[ 시큐리티 관련 타임리프 테스트 ]</h1>
+        <!--ROLE_USER, ROLE_ADMIN-->
+
+    <!-- 로그인하지 않은 경우 -->
+    <div sec:authorize="not isAuthenticated()">
+        <p>로그인하지 않음</p>
+        <p th:text="${#authentication.name}"></p>
+    </div>
+
+    <!-- 로그인한 경우 -->
+    <div sec:authorize="isAuthenticated()">
+        <p>로그인 함</p>
+        <p th:text="${#authentication.name}"></p>
+
+        <p sec:authorize="hasRole('USER')">일반 사용자입니다.</p>
+        <p sec:authorize="hasRole('ADMIN')">관리자입니다.</p>
+
+        <p>* 로그인한 아이디 (username)</p>
+        <p sec:authentication="name"></p>
+
+        <p>* 인증시 사용된 객체에 대한 정보</p>
+        <p sec:authentication="principal"><p>
+
+        <p>* 권한</p>
+        <p sec:authentication="principal.authorities"></p>
+
+
+
+
+
+        <p>* 인증시 사용된 객체에 대한 정보</p>
+        <p th:text="${#authentication}"></p>
+        <p th:text="${#authentication.name}"></p>
+        <p th:text="${#authentication.principal}"></p>
+        <p th:text="${#authentication.principal.name}"></p>
+        <p th:text="${#authentication.principal.enabled}"></p>
+        <p th:text="${#authentication.principal.authorities}"></p>
+
+        <p>* 로그인 아이디 확인</p>
+        <p th:if="${#authentication.name == 'abc'}">ID는 abc입니다.</p>
+
+
+
+    </div>
+
+
+</body>
+</html>

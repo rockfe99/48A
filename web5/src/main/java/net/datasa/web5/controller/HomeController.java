@@ -22,4 +22,12 @@ public class HomeController {
     public String test() {
         return "test";
     }
+
+    /**
+     * 시큐리티 관련 타임리프 테스트
+     */
+    @GetMapping("thymeleaf")
+    public String thymeleaf() {
+        return "thymeleaf";
+    }
 }

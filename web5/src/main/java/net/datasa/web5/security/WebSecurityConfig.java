@@ -24,6 +24,8 @@ public class WebSecurityConfig {
             , "/member/join"        //회원가입
             , "/member/idCheck"     //ID 중복확인
             , "/test"
+            , "/thymeleaf"
+            , "/board/list"
     };
 
     @Bean

@@ -14,3 +14,29 @@ create table web5_member (
         check (rolename in ('ROLE_USER', 'ROLE_ADMIN'))
         -- 사용자 구분. 'role_user', 'role_admin' 중 하나
 );
+
+-- 게시판 글 테이블 (web5_board)
+create table web5_board (
+    board_num int auto_increment primary key,    -- 게시글 일련번호
+    member_id varchar(30),                       -- 작성자 id (외래 키)
+    title varchar(1000) not null,                -- 글제목
+    contents text not null,                      -- 글내용
+    view_count int default 0,                    -- 조회수
+    like_count int default 0,                    -- 추천수
+    original_name varchar(300),                  -- 첨부파일 원래 이름
+    file_name varchar(100),                      -- 첨부파일 저장된 이름
+    create_date timestamp default current_timestamp,  -- 작성 시간
+    update_date timestamp default current_timestamp on update current_timestamp,  -- 수정 시간
+    constraint foreign key (member_id)
+        references web5_member (member_id) on delete set null
+);
+
+insert into web5_board (member_id, title, contents)
+values ('aaa', '제목', '내용');
+
+update web5_board set title = '수정제목' where board_num = 1;
+
+select * from web5_board;
+
+
+
