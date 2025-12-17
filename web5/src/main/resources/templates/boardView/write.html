@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<title>게시판</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+	<script>
+        function formCheck() {
+            let title = document.getElementById('title');
+            let contents = document.getElementById('contents');
+
+            if (title.value.length < 5) {
+                alert('제목을 5자 이상 입력하세요.');
+                title.focus();
+                return false;
+            }
+            if (contents.value.length < 5) {
+                alert('내용을 5자 이상 입력하세요.');
+                contents.focus();
+                return false;
+            }
+            return true;
+        }
+	</script>
+</head>
+<body>
+<header>
+<h1>[ 글쓰기 ]</h1>
+</header>
+
+<section>
+<form th:action="@{/board/write}" method="post" onsubmit="return formCheck()">
+	<table>
+	<tr>
+		<th><label for="title">제목</label></th>
+		<td>
+			<input type="text" name="title" id="title" style="width:400px;">
+		</td>
+	</tr>
+	<tr>
+		<th><lable for="contents">내용</lable></th>
+		<td>
+			<textarea name="contents" id="contents"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<th>파일첨부</th> 
+		<td>
+			<input type="file" name="upload">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="white center">
+			<button type="submit">저장</button>
+		</td> 
+	</tr>
+	</table>
+</form>
+
+</section>
+</body>
+</html>

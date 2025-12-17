@@ -1,13 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko"
-	  xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8">
-<title>web5</title>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
 </head>
 <body>
-	<h1>[ 게시판 ]</h1>
+<header>
+    <h1>[ 게시판 ]</h1>
+</header>
+<section>
+    <!-- 글목록 출력 영역 -->
+    <table>
+        <tr>
+            <td class="white" colspan="4"></td>
+            <td class="head">
+                <a sec:authorize="isAuthenticated()" th:href="@{/board/write}">글쓰기</a>
+                <a th:href="@{/}">HOME</a>
+            </td>
+        </tr>
+        <tr>
+            <th>번호</th>
+            <th style="width:300px;">제목</th>
+            <th>작성자</th>
+            <th>조회수</th>
+            <th>작성일</th>
+        </tr>
+        <tr th:each="board : ${boardList}">
+            <td th:text="${board.boardNum}" class="center"></td>
+            <td>
+                <a th:text="${board.title}" th:href="@{/board/read(boardNum=${board.boardNum})}"></a>
+            </td>
+            <td th:text="${board.memberId}" class="center"></td>
+            <td th:text="${board.viewCount}" class="center"></td>
+            <td th:text="${#temporals.format(board.createDate, 'yy.MM.dd HH:mm')}"></td>
+        </tr>
+    </table>
 
+</section>
 </body>
 </html>

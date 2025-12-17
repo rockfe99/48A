@@ -33,10 +33,6 @@
         <p>* 권한</p>
         <p sec:authentication="principal.authorities"></p>
 
-
-
-
-
         <p>* 인증시 사용된 객체에 대한 정보</p>
         <p th:text="${#authentication}"></p>
         <p th:text="${#authentication.name}"></p>
@@ -48,8 +44,11 @@
         <p>* 로그인 아이디 확인</p>
         <p th:if="${#authentication.name == 'abc'}">ID는 abc입니다.</p>
 
-
-
+        <p>* 아이디가 abc 이거나 권한이 관리자인 경우 "삭제"가 보임</p>
+        <p sec:authorize="isAuthenticated()"
+           th:if="${#authentication.name == 'abc' or #authorization.expression('hasRole(''ADMIN'')')}">
+            삭제
+        </p>
     </div>
 
 

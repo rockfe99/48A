@@ -26,6 +26,7 @@ public class WebSecurityConfig {
             , "/test"
             , "/thymeleaf"
             , "/board/list"
+            , "/board/read"
     };
 
     @Bean

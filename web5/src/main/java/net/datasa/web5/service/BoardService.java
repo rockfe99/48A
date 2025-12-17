@@ -3,12 +3,19 @@ package net.datasa.web5.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.datasa.web5.dto.BoardDTO;
 import net.datasa.web5.dto.MemberDTO;
+import net.datasa.web5.entity.BoardEntity;
 import net.datasa.web5.entity.MemberEntity;
 import net.datasa.web5.repository.BoardRepository;
 import net.datasa.web5.repository.MemberRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +23,7 @@ import java.util.List;
 /**
  * 게시판 서비스
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -24,5 +32,89 @@ public class BoardService {
     //게시판 관련 리포지토리
     private final BoardRepository boardRepository;
 
+    //회원정보 관련 리포지토리
+    private final MemberRepository memberRepository;
+
+
+    /**
+     * 글 저장하기
+     * @param boardDTO 저장할 정보 (작성자ID, 제목, 내용)
+     */
+    public void write(BoardDTO boardDTO) {
+        MemberEntity memberEntity =
+            memberRepository.findById(boardDTO.getMemberId())
+                .orElseThrow(()-> new EntityNotFoundException("아이디가 없습니다."));
+
+        BoardEntity boardEntity = BoardEntity.builder()
+                .member(memberEntity)
+                .title(boardDTO.getTitle())
+                .contents(boardDTO.getContents())
+                .viewCount(0)
+                .likeCount(0)
+                .build();
+        boardRepository.save(boardEntity);
+    }
+
+    /**
+     * 게시글 목록 모두 읽기
+     * @return 게시글 정보가 저장된 ArrayList
+     */
+    public List<BoardDTO> getList() {
+        //DB에서 모든 게시글 정보 조회
+        Sort sort = Sort.by(Sort.Direction.DESC, "boardNum");
+        List<BoardEntity> entityList = boardRepository.findAll(sort);
+        List<BoardDTO> dtoList = new ArrayList<>();
+        for (BoardEntity entity : entityList) {
+            BoardDTO dto = BoardDTO.builder()
+                    .boardNum(entity.getBoardNum())
+                    .memberId(entity.getMember().getMemberId())
+                    .memberName(entity.getMember().getMemberName())
+                    .title(entity.getTitle())
+                    .viewCount(entity.getViewCount())
+                    .createDate(entity.getCreateDate())
+                    .build();
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
+
+    /**
+     * 게시글 1개 조회
+     * @param boardNum          글번호
+     * @return the BoardDTO     글 정보
+     * @throws EntityNotFoundException 게시글이 없을 때 예외
+     */
+    public BoardDTO getBoard(int boardNum) {
+        BoardEntity entity = boardRepository.findById(boardNum)
+                .orElseThrow(() -> new EntityNotFoundException("해당 번호의 글이 없습니다."));
+
+        entity.setViewCount(entity.getViewCount() + 1);
+        log.debug("{}번 게시물 조회 결과 : {}", boardNum, entity);
+
+        BoardDTO dto = entityToDTO(entity);
+        return dto;
+    }
+
+    /**
+     * DB에서 조회한 게시글 정보인 BoardEntity 객체를 BoardDTO 객체로 변환
+     * @param entity    게시글 정보 Entity 객체
+     * @return          게시글 정보 DTO 개체
+     */
+    private BoardDTO entityToDTO(BoardEntity entity) {
+        return BoardDTO.builder()
+                .boardNum(entity.getBoardNum())
+                .memberId(entity.getMember() != null ? entity.getMember().getMemberId() : null)
+                .memberName(entity.getMember() != null ? entity.getMember().getMemberName() : null)
+                .title(entity.getTitle())
+                .contents(entity.getContents())
+                .viewCount(entity.getViewCount())
+                .likeCount(entity.getLikeCount())
+                .originalName(entity.getOriginalName())
+                .fileName(entity.getFileName())
+                .createDate(entity.getCreateDate())
+                .updateDate(entity.getUpdateDate())
+                .build();
+    }
 
 }
