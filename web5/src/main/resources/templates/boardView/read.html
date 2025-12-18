@@ -6,7 +6,18 @@
 	<meta charset="UTF-8">
 	<title>게시판</title>
 	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
-
+    <script>
+        function deleteBoard(bt) {
+            //전달된 삭제버튼(bt)의 "data-num"속성의 값을 읽는다.
+            //그 번호를 /board/delete 경로로 전달하여 글을 삭제한다.
+            //삭제할때 해당번호의 글이 없거나, 본인글이 아니면 예외.
+            //예외상황이면 글목록으로 이동시킨다.
+            if (confirm('삭제하시겠습니까?')) {
+                //location.href = 'delete?boardNum=' + bt.dataset.num;
+                location.href = 'delete?boardNum=[[${board.boardNum}]]';
+            }
+        }
+    </script>
 </head>
 <body>
 <header>
@@ -46,7 +57,7 @@
 <br>
 
 	<div th:if="${#authentication.name == board.memberId}">
-		<button onclick="">삭제</button>
+		<button th:data-num="${board.boardNum}" onclick="deleteBoard(this)">삭제</button>
 		<button onclick="">수정</button>
 	</div>
 <br>

@@ -117,4 +117,21 @@ public class BoardService {
                 .build();
     }
 
+    /**
+     * 게시글 삭제
+     * @param boardNum  삭제할 글번호
+     * @param username  로그인한 아이디
+     */
+    public void delete(int boardNum, String username) {
+        BoardEntity boardEntity = boardRepository.findById(boardNum)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+        if (!boardEntity.getMember().getMemberId().equals(username)) {
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+        boardRepository.delete(boardEntity);
+    }
+
+
+
 }

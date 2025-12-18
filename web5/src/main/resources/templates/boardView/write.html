@@ -32,7 +32,8 @@
 </header>
 
 <section>
-<form th:action="@{/board/write}" method="post" onsubmit="return formCheck()">
+<form th:action="@{/board/write}" method="post"
+      enctype="multipart/form-data" onsubmit="return formCheck()">
 	<table>
 	<tr>
 		<th><label for="title">제목</label></th>
