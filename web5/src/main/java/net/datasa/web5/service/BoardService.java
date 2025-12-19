@@ -10,12 +10,14 @@ import net.datasa.web5.entity.BoardEntity;
 import net.datasa.web5.entity.MemberEntity;
 import net.datasa.web5.repository.BoardRepository;
 import net.datasa.web5.repository.MemberRepository;
+import net.datasa.web5.util.FileManager;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +37,27 @@ public class BoardService {
     //회원정보 관련 리포지토리
     private final MemberRepository memberRepository;
 
+    //파일 저장, 삭제 처리 클래스
+    private final FileManager fileManager;
+
 
     /**
      * 글 저장하기
      * @param boardDTO 저장할 정보 (작성자ID, 제목, 내용)
      */
-    public void write(BoardDTO boardDTO) {
+    public void write(BoardDTO boardDTO, String path, MultipartFile file) throws Exception {
         MemberEntity memberEntity =
             memberRepository.findById(boardDTO.getMemberId())
                 .orElseThrow(()-> new EntityNotFoundException("아이디가 없습니다."));
+
+        String filename = null;
+        String originalName = null;
+
+        //첨부파일이 있으면 지정된 위치에 저장하고 파일명을 Entity에 저장
+        if (file != null && !file.isEmpty()) {
+            filename = fileManager.saveFile(path, file);
+            originalName = file.getOriginalFilename();
+        }
 
         BoardEntity boardEntity = BoardEntity.builder()
                 .member(memberEntity)
@@ -51,6 +65,8 @@ public class BoardService {
                 .contents(boardDTO.getContents())
                 .viewCount(0)
                 .likeCount(0)
+                .fileName(filename)
+                .originalName(originalName)
                 .build();
         boardRepository.save(boardEntity);
     }

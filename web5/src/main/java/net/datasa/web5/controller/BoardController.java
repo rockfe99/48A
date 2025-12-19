@@ -78,7 +78,7 @@ public class BoardController {
         }
 
         try {
-            boardService.write(boardDTO);
+            boardService.write(boardDTO, uploadPath, upload);
             return "redirect:list";
         }
         catch (Exception e) {

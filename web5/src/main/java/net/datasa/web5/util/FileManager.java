@@ -55,7 +55,7 @@ public class FileManager {
         String uuidString = UUID.randomUUID().toString();
         String fileName = dateString + "_" + uuidString + extension;
 
-        // 파일 복사하여 저장
+        // 파일 복사하여 저장 (c:/upload/20251219_4567465788.jpg)
         File filePath = new File(directoryPath + "/" + fileName);
         file.transferTo(filePath);
 
