@@ -1,5 +1,6 @@
 package net.datasa.web5.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web5.dto.BoardDTO;
@@ -127,6 +128,19 @@ public class BoardController {
         }
 
         return "redirect:list";
+    }
+
+    /**
+     * 첨부 파일 다운로드
+     * @param boardNum      게시글 번호
+     * @param response      응답 정보
+     */
+    @GetMapping("download")
+    public void download(
+            @RequestParam("boardNum") Integer boardNum
+            , HttpServletResponse response) {
+
+        boardService.download(boardNum, response, uploadPath);
     }
 
 }

@@ -1,6 +1,8 @@
 package net.datasa.web5.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +17,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,5 +156,42 @@ public class BoardService {
     }
 
 
+    /**
+     * 파일 다운로드
+     * @param boardNum          글 번호
+     * @param response          응답 정보
+     * @param uploadPath        파일 저장 경로
+     */
+    public void download(Integer boardNum, HttpServletResponse response, String uploadPath) {
+        //전달된 글 번호로 글 정보 조회
+        BoardEntity boardEntity = boardRepository.findById(boardNum)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
 
+        //원래의 파일명
+        try {
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(boardEntity.getOriginalName(), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        //저장된 파일 경로
+        String fullPath = uploadPath + "/" + boardEntity.getFileName();
+
+        //서버의 파일을 읽을 입력 스트림과 클라이언트에게 전달할 출력스트림
+        FileInputStream filein = null;
+        ServletOutputStream fileout = null;
+
+        try {
+            filein = new FileInputStream(fullPath);
+            fileout = response.getOutputStream();
+
+            //Spring의 파일 관련 유틸 이용하여 출력
+            FileCopyUtils.copy(filein, fileout);
+
+            filein.close();
+            fileout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

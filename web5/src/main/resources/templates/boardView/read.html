@@ -50,7 +50,11 @@
 	</tr>
 	<tr>
 		<th>파일첨부</th>
-		<td><span th:text="${board.originalName}"></span></td>
+		<td>
+            <a th:href="@{/board/download(boardNum=${board.boardNum})}">
+                <span th:text="${board.originalName}"></span>
+            </a>
+        </td>
 	</tr>
 
 	</table>
