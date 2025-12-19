@@ -152,6 +152,8 @@ public class BoardService {
         if (!boardEntity.getMember().getMemberId().equals(username)) {
             throw new RuntimeException("삭제 권한이 없습니다.");
         }
+        //기존 첨부파일이 있으면 파일 삭제
+        //게시글 정보를 DB에서 삭제
         boardRepository.delete(boardEntity);
     }
 
