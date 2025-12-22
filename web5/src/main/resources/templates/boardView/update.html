@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<title>게시판</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+	<script>
+		function formCheck() {
+			let title = document.getElementById('title');
+			let contents = document.getElementById('contents');
+
+			if (title.value.length < 5) {
+				alert('제목을 5자 이상 입력하세요.');
+				title.focus();
+				title.select();
+				return false;
+			}
+			if (contents.value.length < 5) {
+				alert('내용을 5자 이상 입력하세요.');
+				contents.focus();
+				contents.select();
+				return false;
+			}
+			return true;
+		}
+	</script>
+</head>
+<body>
+<header>
+<h1>[ 글수정 ]</h1>
+</header>
+
+<section>
+<!-- 바이너리 데이터 포함되는 폼. enctype 반드시 정확히 지정 -->
+<form id="updateForm" th:action="@{/board/update}"  method="post"
+	enctype="multipart/form-data" onsubmit="return formCheck()">
+	<!--글 번호 -->
+	<input type="hidden" name="boardNum" th:value="${board.boardNum}">
+	
+	<table>
+	<tr>
+		<th>제목</th>
+		<td>
+			<input type="text" name="title" id="title" style="width:400px;" th:value="${board.title}">
+		</td>
+	</tr>
+	<tr>
+		<th>내용</th> 
+		<td>
+			<textarea name="contents" id="contents" th:text="${board.contents}"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<th>파일첨부</th> 
+		<td>
+			<input type="file" name="upload">
+			<span th:text="${board.originalName}"></span>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" class="white center">
+			<button type="submit">수정</button>
+		</td> 
+	</tr>
+	</table>
+</form>
+
+</section>
+</body>
+</html>

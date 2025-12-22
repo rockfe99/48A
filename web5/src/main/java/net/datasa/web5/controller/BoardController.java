@@ -8,7 +8,6 @@ import net.datasa.web5.dto.MemberDTO;
 import net.datasa.web5.dto.ReplyDTO;
 import net.datasa.web5.security.AuthenticatedUser;
 import net.datasa.web5.service.BoardService;
-import net.datasa.web5.service.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,6 +29,8 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    //application.properties의 게시판 관련 설정 값
+    //첨부파일 저장 경로
     @Value("${board.uploadPath}")
     String uploadPath;
 
@@ -121,13 +122,63 @@ public class BoardController {
             , @AuthenticationPrincipal AuthenticatedUser user) {
 
         try {
-            boardService.delete(boardNum, user.getUsername());
+            boardService.delete(boardNum, user.getUsername(), uploadPath);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
 
         return "redirect:list";
+    }
+
+    /**
+     * 게시글 수정 폼으로 이동
+     * @param boardNum      수정할 글번호
+     * @param user          로그인한 사용자 정보
+     * @return              수정폼 HTML
+     */
+    @GetMapping("update")
+    public String update(
+            Model model
+            , @RequestParam("boardNum") int boardNum
+            , @AuthenticationPrincipal AuthenticatedUser user) {
+
+        try {
+            BoardDTO boardDTO = boardService.getBoard(boardNum);
+            if (!boardDTO.getMemberId().equals(user.getUsername())) {
+                throw new RuntimeException("수정 권한이 없습니다.");
+            }
+            model.addAttribute("board", boardDTO);
+            return "boardView/update";
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:list";
+        }
+    }
+
+    /**
+     * 게시글 수정 처리
+     * @param boardDTO      수정할 글 정보
+     * @param user          로그인한 사용자 정보
+     * @return              수정폼 HTML
+     */
+    @PostMapping("update")
+    public String update(
+            @ModelAttribute BoardDTO boardDTO
+            , @AuthenticationPrincipal AuthenticatedUser user
+            , MultipartFile upload) {
+
+        try {
+            boardDTO.setMemberId(user.getUsername());
+            boardService.update(boardDTO, uploadPath, upload);
+            return "redirect:read?boardNum=" + boardDTO.getBoardNum();
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:list";
+        }
     }
 
     /**
@@ -156,4 +207,25 @@ public class BoardController {
         boardService.replyWrite(replyDTO);
         return "redirect:read?boardNum=" + replyDTO.getBoardNum();
     }
+
+    /**
+     * 리플 삭제
+     * @param replyDTO 삭제할 리플번호와 본문 글번호
+     * @param user 로그인한 사용자 정보
+     * @return 게시글 상세보기 경로
+     */
+    @GetMapping("replyDelete")
+    public String replyDelete(
+            @ModelAttribute ReplyDTO replyDTO
+            , @AuthenticationPrincipal AuthenticatedUser user) {
+
+        try {
+            boardService.replyDelete(replyDTO.getReplyNum(), user.getUsername());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:read?boardNum=" + replyDTO.getBoardNum();
+    }
+
 }

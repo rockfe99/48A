@@ -56,12 +56,14 @@ public class BoardService {
 
     /**
      * 글 저장하기
-     * @param boardDTO 저장할 정보 (작성자ID, 제목, 내용)
+     * @param boardDTO      저장할 글 정보
+     * @param path          파일 저장할 경로
+     * @param file          업로드한 파일
      */
     public void write(BoardDTO boardDTO, String path, MultipartFile file) throws Exception {
         MemberEntity memberEntity =
             memberRepository.findById(boardDTO.getMemberId())
-                .orElseThrow(()-> new EntityNotFoundException("아이디가 없습니다."));
+                .orElseThrow(()-> new EntityNotFoundException("회원 아이디가 없습니다."));
 
         String filename = null;
         String originalName = null;
@@ -134,43 +136,55 @@ public class BoardService {
     }
 
     /**
-     * DB에서 조회한 게시글 정보인 BoardEntity 객체를 BoardDTO 객체로 변환
-     * @param entity    게시글 정보 Entity 객체
-     * @return          게시글 정보 DTO 개체
-     */
-    private BoardDTO entityToDTO(BoardEntity entity) {
-        return BoardDTO.builder()
-                .boardNum(entity.getBoardNum())
-                .memberId(entity.getMember() != null ? entity.getMember().getMemberId() : null)
-                .memberName(entity.getMember() != null ? entity.getMember().getMemberName() : null)
-                .title(entity.getTitle())
-                .contents(entity.getContents())
-                .viewCount(entity.getViewCount())
-                .likeCount(entity.getLikeCount())
-                .originalName(entity.getOriginalName())
-                .fileName(entity.getFileName())
-                .createDate(entity.getCreateDate())
-                .updateDate(entity.getUpdateDate())
-                .build();
-    }
-
-    /**
      * 게시글 삭제
      * @param boardNum  삭제할 글번호
      * @param username  로그인한 아이디
+     * @param path      파일 저장경로
      */
-    public void delete(int boardNum, String username) {
+    public void delete(int boardNum, String username, String path) throws Exception{
         BoardEntity boardEntity = boardRepository.findById(boardNum)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
 
         if (!boardEntity.getMember().getMemberId().equals(username)) {
             throw new RuntimeException("삭제 권한이 없습니다.");
         }
-        //기존 첨부파일이 있으면 파일 삭제
-        //게시글 정보를 DB에서 삭제
+
+        //첨부파일이 있으면 삭제
+        if (boardEntity.getFileName() != null) {
+            fileManager.deleteFile(path, boardEntity.getFileName());
+        }
         boardRepository.delete(boardEntity);
     }
 
+    /**
+     * 게시글 수정
+     * @param boardDTO      수정할 글정보와 로그인한 아이디
+     * @param uploadPath    파일 저장할 경로
+     * @param upload        업로드된 파일
+     */
+    public void update(BoardDTO boardDTO, String uploadPath, MultipartFile upload)
+            throws Exception {
+        BoardEntity boardEntity = boardRepository.findById(boardDTO.getBoardNum())
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+        if (!boardEntity.getMember().getMemberId().equals(boardDTO.getMemberId())) {
+            throw new RuntimeException("수정 권한이 없습니다.");
+        }
+
+        //전달된 정보 수정
+        boardEntity.setTitle(boardDTO.getTitle());
+        boardEntity.setContents(boardDTO.getContents());
+
+        //업로드된 파일이 있으면 기존 파일 삭제하고 새로 저장
+        if (upload != null && !upload.isEmpty()) {
+            if (boardEntity.getFileName() != null) {
+                fileManager.deleteFile(uploadPath, boardEntity.getFileName());
+            }
+            String fileName = fileManager.saveFile(uploadPath, upload);
+            boardEntity.setOriginalName(upload.getOriginalFilename());
+            boardEntity.setFileName(fileName);
+        }
+    }
 
     /**
      * 파일 다운로드
@@ -214,7 +228,7 @@ public class BoardService {
     /**
      * 리플 저장
      * @param replyDTO 작성한 리플 정보
-     * @throws EntityNotFoundException 사용자 정보가 없을 때 예외
+     * @throws EntityNotFoundException 사용자 정보가 없을 때, 게시글이 없을 때 예외
      */
     public void replyWrite(ReplyDTO replyDTO) {
         MemberEntity memberEntity = memberRepository.findById(replyDTO.getMemberId())
@@ -230,6 +244,42 @@ public class BoardService {
                 .build();
 
         replyRepository.save(entity);
+    }
+
+    /**
+     * 리플 삭제
+     * @param replyNum  삭제할 리플 번호
+     * @param username  로그인한 아이디
+     */
+    public void replyDelete(Integer replyNum, String username) {
+        ReplyEntity replyEntity = replyRepository.findById(replyNum)
+                .orElseThrow(() -> new EntityNotFoundException("리플이 없습니다."));
+
+        if (!replyEntity.getMember().getMemberId().equals(username)) {
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+        replyRepository.delete(replyEntity);
+    }
+
+    /**
+     * DB에서 조회한 게시글 정보인 BoardEntity 객체를 BoardDTO 객체로 변환
+     * @param entity    게시글 정보 Entity 객체
+     * @return          게시글 정보 DTO 개체
+     */
+    private BoardDTO entityToDTO(BoardEntity entity) {
+        return BoardDTO.builder()
+                .boardNum(entity.getBoardNum())
+                .memberId(entity.getMember() != null ? entity.getMember().getMemberId() : null)
+                .memberName(entity.getMember() != null ? entity.getMember().getMemberName() : null)
+                .title(entity.getTitle())
+                .contents(entity.getContents())
+                .viewCount(entity.getViewCount())
+                .likeCount(entity.getLikeCount())
+                .originalName(entity.getOriginalName())
+                .fileName(entity.getFileName())
+                .createDate(entity.getCreateDate())
+                .updateDate(entity.getUpdateDate())
+                .build();
     }
 
 
