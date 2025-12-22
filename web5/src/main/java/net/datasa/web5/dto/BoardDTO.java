@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 게시글 정보 DTO
@@ -26,4 +27,5 @@ public class BoardDTO {
     private String fileName;                        //첨부파일의 저장된 이름
     private LocalDateTime createDate;               //작성 시간
     private LocalDateTime updateDate;               //수정 시간
+    private List<ReplyDTO> replyList;           //현재글의 리플목록
 }

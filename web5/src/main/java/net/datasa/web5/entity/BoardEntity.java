@@ -70,4 +70,7 @@ public class BoardEntity {
     @Column
     private LocalDateTime updateDate;
 
+    //현재 게시글을 참조하는 리플 목록
+    @OneToMany(mappedBy = "board")
+    private List<ReplyEntity> replyList;
 }

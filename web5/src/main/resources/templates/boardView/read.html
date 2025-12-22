@@ -67,13 +67,30 @@
 <br>
 
     <!-- 리플 작성 폼 시작 -->
-	<div sec:authorize="isAuthenticated()">
-        <form>
+    <div sec:authorize="isAuthenticated()">
+        <!-- 리플 작성 폼 시작 -->
+        <form th:action="@{/board/replyWrite}" method="post" onsubmit="return replyWrite()">
+            <input type="hidden" name="boardNum" th:value="${board.boardNum}">
+            <input type="text" name="contents" id="replyContents" style="width:500px;">
+            <input type="submit" value="확인">
         </form>
-	</div>
+    </div>
 
 	<!-- 리플 목록 출력 시작 -->
-
+    <table class="reply">
+        <tr th:each="reply : ${board.replyList}">
+            <td class="replyid" th:text="${reply.memberId}"></td>
+            <td class="replytext" th:text="${reply.contents}"></td>
+            <td class="replydate" th:text="${#temporals.format(reply.createDate, 'yy.MM.dd HH.mm')}"></td>
+            <td class="white">
+				<span th:if="${#authentication.name} == ${reply.memberId}">
+					<a th:href="|javascript:replyDelete(${reply.replyNum}, ${reply.boardNum})|">
+						삭제
+					</a>
+				</span>
+            </td>
+        </tr>
+    </table>
 </section>
 </body>
 </html>

@@ -38,5 +38,16 @@ update web5_board set title = '수정제목' where board_num = 1;
 
 select * from web5_board;
 
-
+-- 게시판 리플 테이블 (web5_reply)
+create table web5_reply (
+    reply_num int auto_increment primary key,    -- 리플 일련번호
+    board_num int,                               -- 게시글 번호 (외래 키)
+    member_id varchar(30),                       -- 작성자 id (외래 키)
+    contents varchar(2000) not null,             -- 리플 내용
+    create_date timestamp default current_timestamp,  -- 작성 시간
+    constraint foreign key (board_num) references web5_board (board_num)
+        on delete cascade,
+    constraint foreign key (member_id) references web5_member (member_id)
+        on delete set null
+);
 

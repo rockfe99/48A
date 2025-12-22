@@ -8,10 +8,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web5.dto.BoardDTO;
 import net.datasa.web5.dto.MemberDTO;
+import net.datasa.web5.dto.ReplyDTO;
 import net.datasa.web5.entity.BoardEntity;
 import net.datasa.web5.entity.MemberEntity;
+import net.datasa.web5.entity.ReplyEntity;
 import net.datasa.web5.repository.BoardRepository;
 import net.datasa.web5.repository.MemberRepository;
+import net.datasa.web5.repository.ReplyRepository;
 import net.datasa.web5.util.FileManager;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,6 +43,9 @@ public class BoardService {
 
     //게시판 관련 리포지토리
     private final BoardRepository boardRepository;
+
+    //리플 관련 리포지토리
+    private final ReplyRepository replyRepository;
 
     //회원정보 관련 리포지토리
     private final MemberRepository memberRepository;
@@ -116,6 +122,14 @@ public class BoardService {
         log.debug("{}번 게시물 조회 결과 : {}", boardNum, entity);
 
         BoardDTO dto = entityToDTO(entity);
+        //BoardEntity 내의 replyList를 변환하여 BoardDTO에 대입
+        List<ReplyDTO> replyDTOList = new ArrayList<ReplyDTO>();
+        for (ReplyEntity replyEntity : entity.getReplyList()) {
+            ReplyDTO replyDTO = replyEntityToReplyDTO(replyEntity);
+            replyDTOList.add(replyDTO);
+        }
+        dto.setReplyList(replyDTOList);
+
         return dto;
     }
 
@@ -196,4 +210,43 @@ public class BoardService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 리플 저장
+     * @param replyDTO 작성한 리플 정보
+     * @throws EntityNotFoundException 사용자 정보가 없을 때 예외
+     */
+    public void replyWrite(ReplyDTO replyDTO) {
+        MemberEntity memberEntity = memberRepository.findById(replyDTO.getMemberId())
+                .orElseThrow(() -> new EntityNotFoundException("사용자 아이디가 없습니다."));
+
+        BoardEntity boardEntity = boardRepository.findById(replyDTO.getBoardNum())
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+        ReplyEntity entity = ReplyEntity.builder()
+                .board(boardEntity)
+                .member(memberEntity)
+                .contents(replyDTO.getContents())
+                .build();
+
+        replyRepository.save(entity);
+    }
+
+
+    /**
+     * ReplyEntity객체를 ReplyDTO 객체로 변환
+     * @param entity    리플 정보 Entity 객체
+     * @return          리플 정보 DTO 객체
+     */
+    private ReplyDTO replyEntityToReplyDTO(ReplyEntity entity) {
+        return ReplyDTO.builder()
+                .replyNum(entity.getReplyNum())
+                .boardNum(entity.getBoard().getBoardNum())
+                .memberId(entity.getMember().getMemberId())
+                .memberName(entity.getMember().getMemberName())
+                .contents(entity.getContents())
+                .createDate(entity.getCreateDate())
+                .build();
+    }
+
 }

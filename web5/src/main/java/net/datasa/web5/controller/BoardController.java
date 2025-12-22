@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.web5.dto.BoardDTO;
 import net.datasa.web5.dto.MemberDTO;
+import net.datasa.web5.dto.ReplyDTO;
 import net.datasa.web5.security.AuthenticatedUser;
 import net.datasa.web5.service.BoardService;
 import net.datasa.web5.service.MemberService;
@@ -100,7 +101,6 @@ public class BoardController {
 
         try {
             BoardDTO boardDTO = boardService.getBoard(boardNum);
-
             model.addAttribute("board", boardDTO);
             return "boardView/read";
         }
@@ -143,4 +143,17 @@ public class BoardController {
         boardService.download(boardNum, response, uploadPath);
     }
 
+    /**
+     * 리플 쓰기
+     * @param replyDTO      저장할 리플 정보
+     * @param user          로그인 사용자 정보
+     * @return              게시글 보기 경로로 이동
+     */
+    @PostMapping("replyWrite")
+    public String replyWrite(@ModelAttribute ReplyDTO replyDTO
+            , @AuthenticationPrincipal AuthenticatedUser user) {
+        replyDTO.setMemberId(user.getUsername());
+        boardService.replyWrite(replyDTO);
+        return "redirect:read?boardNum=" + replyDTO.getBoardNum();
+    }
 }
