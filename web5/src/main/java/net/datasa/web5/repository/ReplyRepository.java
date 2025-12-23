@@ -16,5 +16,22 @@ import java.util.List;
 
 @Repository
 public interface ReplyRepository extends JpaRepository<ReplyEntity, Integer> {
+/*
+    //아래 메소드는 이 예제에서는 사용되지 않음.
+    //현재 글 상세보기페이지의 리플 목록은 Entity에서 처리함.
 
+    //한 게시글의 리플 조회
+    List<ReplyEntity> findByBoard_BoardNum(int boardNum, Sort sort);
+
+    //한 게시글의 리플 조회 (JPQL 사용. 테이블명이 아닌 Entity 이름 사용)
+    @Query("""
+        SELECT r
+        FROM ReplyEntity r
+        WHERE r.board.boardNum = :boardNum
+    """)
+    List<ReplyEntity> findRepliesByBoardNum(
+            @Param("boardNum") int boardNum,
+            Sort sort
+    );
+    */
 }

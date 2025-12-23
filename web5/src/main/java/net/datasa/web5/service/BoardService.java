@@ -16,6 +16,9 @@ import net.datasa.web5.repository.BoardRepository;
 import net.datasa.web5.repository.MemberRepository;
 import net.datasa.web5.repository.ReplyRepository;
 import net.datasa.web5.util.FileManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,26 +90,38 @@ public class BoardService {
     }
 
     /**
-     * 게시글 목록 모두 읽기
-     * @return 게시글 정보가 저장된 ArrayList
+     * 검색 후 지정한 한페이지 분량의 글 목록 조회
+     *
+     * @param page        현재 페이지
+     * @param pageSize    한 페이지당 글 수
+     * @param searchType  검색 대상 (title, contents, id)
+     * @param searchWord  검색어
+     * @return 한페이지의 글 목록
      */
-    public List<BoardDTO> getList() {
-        //DB에서 모든 게시글 정보 조회
-        Sort sort = Sort.by(Sort.Direction.DESC, "boardNum");
-        List<BoardEntity> entityList = boardRepository.findAll(sort);
-        List<BoardDTO> dtoList = new ArrayList<>();
-        for (BoardEntity entity : entityList) {
-            BoardDTO dto = BoardDTO.builder()
-                    .boardNum(entity.getBoardNum())
-                    .memberId(entity.getMember().getMemberId())
-                    .memberName(entity.getMember().getMemberName())
-                    .title(entity.getTitle())
-                    .viewCount(entity.getViewCount())
-                    .createDate(entity.getCreateDate())
-                    .build();
-            dtoList.add(dto);
+    public Page<BoardDTO> getList(int page, int pageSize, String searchType, String searchWord) {
+        //Page 객체는 번호가 0부터 시작
+        page--;
+
+        //페이지 조회 조건 (현재 페이지, 페이지당 글수, 정렬 순서, 정렬 기준 컬럼)
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.DESC, "boardNum");
+
+        Page<BoardEntity> entityPage = null;
+
+        switch (searchType) {
+            case "title" :
+                entityPage = boardRepository.findByTitleContaining(searchWord, pageable);     break;
+            case "contents" :
+                entityPage = boardRepository.findByContentsContaining(searchWord, pageable);     break;
+            case "id" :
+                entityPage = boardRepository.findByMember_MemberId(searchWord, pageable);     break;
+            default :
+                entityPage = boardRepository.findAll(pageable);     break;
         }
-        return dtoList;
+
+        //entityPage의 각 요소들을 순회하면서 convertToDTO() 메소드로 전달하여 DTO로 변환하고
+        //이를 다시 새로운 Page객체로 만든다.
+        Page<BoardDTO> boardDTOPage = entityPage.map(this::entityToDTO);
+        return boardDTOPage;
     }
 
 

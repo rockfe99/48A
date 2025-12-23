@@ -9,6 +9,7 @@ import net.datasa.web5.dto.ReplyDTO;
 import net.datasa.web5.security.AuthenticatedUser;
 import net.datasa.web5.service.BoardService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,15 +35,44 @@ public class BoardController {
     @Value("${board.uploadPath}")
     String uploadPath;
 
+    //페이지당 글 수
+    @Value("${board.pageSize}")
+    int pageSize;
+
+    //현재 페이지 외에 이동할 링크 수
+    @Value("${board.linkSize}")
+    int linkSize;
+
     /**
      * 게시판 전체 글 목록. 검색 및 페이지 지정 없이 모두 조회
      * @param model
      * @return 글 목록 페이지
      */
     @GetMapping("list")
-    public String list(Model model) {
-        List<BoardDTO> boardList = boardService.getList();
-        model.addAttribute("boardList", boardList);
+    public String list(Model model
+            , @RequestParam(name = "page", defaultValue = "1") int page
+            , @RequestParam(name = "searchType", defaultValue = "") String searchType
+            , @RequestParam(name = "searchWord", defaultValue = "") String searchWord) {
+
+        log.debug("설정 값 : pageSize={}, linkSize={}", pageSize, linkSize);
+        log.debug("요청파라미터 : page={}, searchType={}, searchWord={}", page, searchType, searchWord);
+
+        //글 목록 1페이지
+        Page<BoardDTO> boardPage = boardService.getList(page, pageSize, searchType, searchWord);
+
+        model.addAttribute("boardPage", boardPage);
+        model.addAttribute("page", page);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchWord", searchWord);
+        model.addAttribute("linkSize", linkSize);
+
+        log.debug("전체 개수 :{}", boardPage.getTotalElements());
+        log.debug("전체 페이지수 :{}", boardPage.getTotalPages());
+        log.debug("현재 페이지 :{}", boardPage.getNumber());
+        log.debug("페이지당 글수 :{}", boardPage.getSize());
+        log.debug("이전페이지 존재 :{}", boardPage.hasPrevious());
+        log.debug("다음페이지 존재 :{}", boardPage.hasNext());
+
         return "boardView/list";
     }
 

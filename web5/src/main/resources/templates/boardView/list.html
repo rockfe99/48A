@@ -6,16 +6,39 @@
     <meta charset="UTF-8">
     <title>게시판</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+
+    <!-- 페이지 이동 스크립트  -->
+    <script>
+        function pagingFormSubmit(currentPage) {
+            document.getElementById('page').value = currentPage;
+            document.getElementById('pagingForm').submit();
+        }
+    </script>
+
 </head>
 <body>
 <header>
-    <h1>[ 게시판 ]</h1>
+    <h1><a th:href="@{/board/list}">[ 게시판 ]</a></h1>
 </header>
 <section>
+
+    <div>현재 페이지에 포함된 실제 데이터 목록 : [[${boardPage.getContent()}]]</div>
+    <div>조회된 결과의 전체 데이터 개수 : [[${boardPage.getTotalElements()}]]</div>
+    <div>전체 페이지 수 : [[${boardPage.getTotalPages()}]]</div>
+    <div>현재 페이지 번호 (0부터 시작) : [[${boardPage.getNumber()}]]</div>
+    <div>한 페이지의 데이터 개수 : [[${boardPage.getSize()}]]</div>
+    <div>이전 페이지가 있는가 (현재가 0이면 false) : [[${boardPage.hasPrevious()}]]</div>
+    <div>다음 페이지가 있는가 (마지막 페이지에서는 false) : [[${boardPage.hasNext()}]]</div>
+
+
     <!-- 글목록 출력 영역 -->
     <table>
         <tr>
-            <td class="white" colspan="4"></td>
+            <td class="white">
+                전체 <span th:text="${boardPage.totalElements}"></span>
+            </td>
+            <td class="white">페이지 <span th:text="${page}"></span> of <span th:text="${boardPage.getTotalPages()}"></span></td>
+            <td class="white" colspan="2"></td>
             <td class="head">
                 <a sec:authorize="isAuthenticated()" th:href="@{/board/write}">글쓰기</a>
                 <a th:href="@{/}">HOME</a>
@@ -28,16 +51,49 @@
             <th>조회수</th>
             <th>작성일</th>
         </tr>
-        <tr th:each="board : ${boardList}">
+        <tr th:each="board, status : ${boardPage}">
             <td th:text="${board.boardNum}" class="center"></td>
             <td>
-                <a th:text="${board.title}" th:href="@{/board/read(boardNum=${board.boardNum})}"></a>
+                <!--/* <a th:text="${board.title}" th:href="@{/board/read(boardNum=${board.boardNum})}"></a> */-->
+                <a th:text="${board.title}" th:href="|read?boardNum=${board.boardNum}|"></a>
             </td>
             <td th:text="${board.memberId}" class="center"></td>
             <td th:text="${board.viewCount}" class="center"></td>
             <td th:text="${#temporals.format(board.createDate, 'yy.MM.dd HH:mm')}"></td>
         </tr>
     </table>
+
+    <div id="navigator">
+
+        <!-- 페이지 이동 링크 -->
+        <span th:if="${boardPage.getTotalPages() > 0 and page != 1}">
+		<a href="javascript:pagingFormSubmit(1)">첫페이지</a>
+	</span>
+        <span
+                th:if="${boardPage.getTotalPages() > 0}"
+                th:each="counter : ${#numbers.sequence((page - linkSize < 1 ? 1 : page - linkSize), (page + linkSize > boardPage.getTotalPages() ? boardPage.getTotalPages() : page + linkSize))}">
+		<th:block th:if="${counter == page}"><b></th:block>
+			<a th:text="${counter}" th:href="|javascript:pagingFormSubmit(${counter})|"></a>&nbsp;
+		<th:block th:if="${counter == page}"></b></th:block>
+	</span>
+        <span th:if="${boardPage.getTotalPages() > 0 and page != boardPage.getTotalPages()}">
+		<a th:href="|javascript:pagingFormSubmit(${boardPage.getTotalPages()})|">마지막페이지</a>
+	</span>
+        <br><br>
+
+        <!-- 검색폼 -->
+        <form id="pagingForm" method="get" th:action="@{/board/list}">
+            <input type="hidden" name="page" id="page">
+            <select id="type" name="searchType">
+                <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                <option value="contents" th:selected="${searchType == 'contents'}">본문</option>
+                <option value="id" th:selected="${searchType == 'id'}">작성자ID</option>
+            </select>
+            <input type="text"  name="searchWord" th:value="${searchWord}">
+            <input type="button" onclick="pagingFormSubmit(1)" value="검색">
+        </form>
+
+    </div>
 
 </section>
 </body>
