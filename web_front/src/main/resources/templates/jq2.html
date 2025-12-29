@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            //ID가 button1인 버튼을 클릭하면 testButton() 함수 실행
+            $('#button1').on('click', testButton);
+
+            //ID가 button2인 버튼을 클릭하면 button1의 이벤트처리 기능을 없앤다
+            $('#button2').on('click', function() {
+                //$('#button1').off();
+                $('#button1').off('click');
+            });
+
+            //ID가 button3인 버튼을 클릭하면 button1의 이벤트처리 기능을 다시 연결
+            $('#button3').on('click', function() {
+                $('#button1').on('click', testButton);
+            });
+
+            //ID가 button4인 버튼을 클릭하면 button1의 클릭이벤트 강제발생
+            $('#button4').on('click', function() {
+                $('#button1').trigger('click');
+            });
+
+            //ID가 button5인 버튼을 클릭하면 3초후에 button1 클릭
+            $('#button5').on('click', function() {
+                setTimeout(function() {
+                    $('#button1').trigger('click');
+                }, 3000);
+            });
+
+        });
+        function testButton() {
+            alert('버튼1에 이벤트 발생');
+        }
+    </script>
+</head>
+<body>
+<h2>[ 이벤트 처리 ]</h2>
+<ul>
+    <li>이벤트 처리 연결과 해제
+        <p><input type="button" value="버튼1" id="button1"></p>
+        <p><input type="button" value="버튼2" id="button2"></p>
+        <p><input type="button" value="버튼3" id="button3"></p>
+        <p><input type="button" value="버튼4" id="button4"></p>
+        <p><input type="button" value="버튼5" id="button5"></p>
+    </li>
+
+</ul>
+</body>
+</html>
+

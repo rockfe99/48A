@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        //현재 페이지 로딩 후 바로 실행
+        $(document).ready(function() {
+            //현재 화면 전체 요소들의 글자색을 파란색으로
+            $('*').css('color', 'blue');
+            //태그선택자
+            $('p').css('color', 'green');
+            //ID 선택자
+            $('#text1').css('color', 'red');
+            //클래스 선택자
+            $('.text2').css('color', 'pink');
+            $('.text3').css('background-color', 'gray');
+            $('.text3').css('border', '1px solid red');
+
+
+            //자식 선택자
+            //$('div > p').css('color', 'red');
+            //자손 선택자
+            //$('div p').css('color', 'red');
+            //여러 선택자
+            //$('div, p').css('color', 'red');
+
+            //속성 선택자
+            $('input[type="password"]').css({
+                'border' : '1px solid blue',
+                'background-color' : 'yellow'
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+<h2>[ jQuery 기본 문법, 선택자 ]</h2>
+
+<p>p태그를 이용한 텍스트</p>
+<p>p태그를 이용한 텍스트</p>
+<p id="text1">p태그를 이용한 텍스트</p>
+<p class="text2">p태그를 이용한 텍스트</p>
+<p class="text2 text3">p태그를 이용한 텍스트</p>
+
+<div>
+	<p>이 글자는 빨간색이 됩니다.</p>
+	<span>
+        <p>이 글자는 빨간색이 되지 않습니다.</p>
+    </span>
+</div>
+<div>
+	<p>이 글자도 빨간색이 됩니다.</p>
+</div>
+
+<form>
+	<input type="text" value="텍스트필드"><br>
+	<input type="password" value="12345"><br>
+	<button>버튼</button>
+</form>
+
+</body>
+</html>
+
