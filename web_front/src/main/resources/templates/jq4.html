@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#bt1').click(function() {
+                let s = $('h3').html();
+                console.log(s);
+
+                $('h3').each(function(i, tag) {
+                    console.log($(tag).html());
+                });
+            });
+            $('#bt2').click(function() {
+                let s = $('h3').text();
+                console.log(s);
+
+                $('h3').each(function(i, tag) {
+                    console.log($(tag).text());
+                });
+            });
+            $('#bt3').click(function() {
+                console.log($('#text1').val());
+            });
+            $('#bt4').click(function() {
+                $('h2').html('<b>바뀐</b>제목');
+                $('b').text('<i>바뀐</i>문자열');
+                $('#text1').val('입력한 문자열');
+            });
+
+            $('#bt5').click(function() {
+                alert( $('#img1').attr('src') );
+                $('#img1').attr('src', '/image/image2.png');
+            });
+
+            $('#bt6').click(function() {
+                //이미지의 테두리 선 모양을 변경
+            });
+
+            $('#bt7').click(function() {
+                //입력란의 모양을 변경
+            });
+
+            $('#bt8').click(function() {
+                //입력란의 모양을 원래대로
+            });
+
+        });
+    </script>
+</head>
+<body>
+<h2>[ 문서객체 조작 ]</h2>
+
+<h3><b>h3</b>태그를 사용한 문자열 1</h3>
+<h3><i>h3</i>태그를 사용한 문자열 2</h3>
+<p><input type="text" id="text1"></p>
+
+<p><input type="button" id="bt1" value="html함수"></p>
+<p><input type="button" id="bt2" value="text함수"></p>
+<p><input type="button" id="bt3" value="val함수"></p>
+<p><input type="button" id="bt4" value="값 변경"></p>
+
+<p><img src="/image/image1.png" id="img1"></p>
+
+<p><input type="button" id="bt5" value="attr함수"></p>
+<p><input type="button" id="bt6" value="css함수"></p>
+<p><input type="button" id="bt7" value="addClass함수함수"></p>
+<p><input type="button" id="bt8" value="removeClass함수함수"></p>
+
+
+</body>
+</html>
+

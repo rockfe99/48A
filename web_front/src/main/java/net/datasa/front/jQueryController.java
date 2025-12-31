@@ -17,5 +17,13 @@ public class jQueryController {
     public String jq2() {
         return "jq2";
     }
+    @GetMapping("jq3")
+    public String jq3() {
+        return "jq3";
+    }
+    @GetMapping("jq4")
+    public String jq4() {
+        return "jq4";
+    }
 
 }
