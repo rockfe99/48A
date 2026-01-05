@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#formButton1').click(function() {
+                //폼에 입력한 값을 읽어옴
+                let n = $('#name1').val();
+                let a = $('#age1').val();
+                let p = $('#phone1').val();
+
+                //유효성검사
+                if (n === '') {
+                    alert('이름을 입력하세요.');
+                    return;
+                }
+                //서버로 전달하여 저장
+                $.ajax({
+                    url: 'insert1',
+                    type: 'post',
+                    data: {'name': n, 'age': a, 'phone': p},
+                    success: function() {
+                        alert('저장되었습니다.');
+                    },
+                    error: function() {
+                        alert('저장 실패');
+                    }
+                });
+
+            });
+
+            $('#formButton2').click(function() {
+                //폼에 입력한 값을 읽어옴
+                let n = $('#name2').val();
+                let a = $('#age2').val();
+                let p = $('#phone2').val();
+
+                //유효성검사
+                if (n === '') {
+                    alert('이름을 입력하세요.');
+                    return;
+                }
+
+                let ob = {'name': n, 'age': a, 'phone': p};
+
+                //서버로 전달하여 저장
+                $.ajax({
+                    url: 'insert2',
+                    type: 'post',
+                    data: ob,
+                    success: function() {
+                        alert('저장되었습니다.');
+                    },
+                    error: function() {
+                        alert('저장 실패');
+                    }
+                });
+
+            });
+
+            $('#formButton3').click(function() {
+                $.ajax({
+                    url: 'insert2',
+                    type: 'post',
+                    data: $('#writeForm3').serialize(),
+                    success: function() {
+                        alert('저장되었습니다.');
+                    },
+                    error: function() {
+                        alert('저장 실패');
+                    }
+                });
+
+            });
+
+            $('#bt1').click(function() {
+                $.ajax({
+                    url: 'getObject',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(ob) {
+                        let text = `이름 : ${ob.name}<br>
+                                    나이 : ${ob.age}<br>
+                                    전화 : ${ob.phone}<br>`;
+                        $('#outputDiv').html(text);
+                    },
+                    error: function() {
+                        alert('오류');
+                    }
+                });
+            });
+
+
+        });
+
+    </script>
+</head>
+<body>
+    <h2>[ 객체 보내기 / 받기 ]</h2>
+
+    <p>1. 서버로 각각의 Parameter를 전달</p>
+    <form id="writeForm1">
+        이름 <input type="text" id="name1"><br>
+        나이 <input type="number" id="age1" value="0"><br>
+        전화 <input type="text" id="phone1"><br>
+        <input type="button" id="formButton1" value="저장">
+    </form>
+
+    <p>2. 서버에서 객체로 받기</p>
+    <form id="writeForm2">
+        이름 <input type="text" id="name2"><br>
+        나이 <input type="number" id="age2" value="0"><br>
+        전화 <input type="text" id="phone2"><br>
+        <input type="button" id="formButton2" value="저장">
+    </form>
+
+    <p>3. 서버에서 객체로 받기</p>
+    <form id="writeForm3">
+        이름 <input type="text" name="name" id="name3"><br>
+        나이 <input type="number"  name="age" id="age3" value="0"><br>
+        전화 <input type="text" name="phone" id="phone3"><br>
+        <input type="button" id="formButton3" value="저장">
+    </form>
+
+    <p>4. 서버에서 객체 받기</p>
+    <p><button id="bt1">객체 받기</button></p>
+    <div id="outputDiv"></div>
+
+
+</body>
+</html>
+

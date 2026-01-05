@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#bt1').click(function () {
+                $.ajax({
+                    url: 'test1',
+                    type: 'get',
+                    success: function() {
+                        alert('실행 성공');
+                    },
+                    error: function(e) {
+                        alert('실행 실패');
+                        alert(e);
+                        alert(JSON.stringify(e));
+                    }
+                });
+                alert('ajax 함수 아래');
+            });
+
+            //서버로 문자열 보내기
+            $('#bt2').click(function () {
+                $.ajax({
+                    url: 'test2',
+                    type: 'get',
+                    data: { str :'클라이언트에서 보낸 문자열'},
+                    success: function() {
+                        alert('실행 성공');
+                    },
+                    error: function(e) {
+                        alert('실행 실패');
+                    }
+                });
+            });
+            //서버에서 문자열 받기
+            $('#bt3').click(function () {
+                $.ajax({
+                    url: 'test3',
+                    type: 'get',
+                    dataType: 'text',  //text, json
+                    success: function(s) {
+                        alert(s);
+                    },
+                    error: function(e) {
+                        alert('실행 실패');
+                    }
+                });
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <h2>[ Ajax 요청과 응답 ]</h2>
+    <p><button id="bt1">요청 보내기</button></p>
+    <p><button id="bt2">문자열 보내기</button></p>
+    <p><button id="bt3">서버에서 문자열 받기</button></p>
+
+
+</body>
+</html>
+

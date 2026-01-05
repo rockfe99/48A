@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#bt1').click(function() {
+                $('#textDiv').show('slow');
+            });
+            $('#bt2').click(function() {
+                $('#textDiv').hide('slow');
+            });
+
+            $('#bt3').on('click', function() {
+                $('#textDiv').toggle('slow');
+            });
+
+            $('#bt4').on('click', function() {
+                $('#textDiv').slideDown('slow');
+            });
+
+            $('#bt5').on('click', function() {
+                $('#textDiv').slideUp('slow');
+            });
+
+            $('#bt6').on('click', function() {
+                $('#textDiv').fadeIn('slow');
+            });
+
+            $('#bt7').on('click', function() {
+                $('#textDiv').fadeOut('slow');
+            });
+        });
+    </script>
+    <style>
+        #textDiv { width:300px; height:300px; background-color:yellow; font-size:20px; }
+    </style>
+</head>
+<body>
+<h2>[ 애니메이션 효과 ]</h2>
+<p>
+    <input type="button" value="show" id="bt1">
+    <input type="button" value="hide" id="bt2">
+    <input type="button" value="toggle" id="bt3">
+    <input type="button" value="slideDown" id="bt4">
+    <input type="button" value="slideUp" id="bt5">
+    <input type="button" value="fadeIn" id="bt6">
+    <input type="button" value="fadeOut" id="bt7">
+</p>
+<div id="textDiv">
+   Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad autem debitis dolorum illo omnis repudiandae sed veritatis voluptates! Dicta doloribus eos eveniet laboriosam, magnam molestiae nam optio saepe veritatis.
+</div>
+
+</body>
+</html>
+
