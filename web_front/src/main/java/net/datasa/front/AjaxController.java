@@ -2,17 +2,23 @@ package net.datasa.front;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.front.dto.Person;
+import net.datasa.front.service.AjaxService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("ajax")
 @Controller
 public class AjaxController {
+
+    private final AjaxService ajaxService;
 
     @GetMapping("aj1")
     public String aj1() {
@@ -112,9 +118,11 @@ public class AjaxController {
         }
 
         log.debug("전달받은 문자열 : {}", ar);
+        // "[{name:'aaa',age:11,phone:'1111'},{name:'bbb',age:22,phone:'2222'}]"
 
         ObjectMapper objectMapper = new ObjectMapper();
-        ArrayList<Person> list = objectMapper.readValue(ar, new TypeReference<ArrayList<Person>>() {});
+        ArrayList<Person> list =
+                objectMapper.readValue(ar, new TypeReference<ArrayList<Person>>() {});
         log.debug("변환결과 리스트 : {}", list);
 
         for (Object ob : list) {
@@ -122,6 +130,28 @@ public class AjaxController {
             log.debug("요소값 : {}", ob);
         }
 
+    }
+
+
+    @GetMapping("recommend")
+    public String recommend() {
+        return "recommend";
+    }
+
+    /**
+     * 추천수 증가
+     */
+    @ResponseBody
+    @GetMapping("like")
+    public ResponseEntity<?> vote(@RequestParam Integer num) throws Exception {
+        try {
+            Integer cnt = 0;
+            cnt = ajaxService.like(num);
+            return ResponseEntity.ok(cnt);
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body("추천실패");
+        }
     }
 
 }

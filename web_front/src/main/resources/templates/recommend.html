@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+    <title>JavaScript</title>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+           $('#bt').click(function() {
+                //지금 누른 버튼의 num속성을 읽어온다
+                //ajax() 함수로 추천할 글 번호를 서버로 전송
+                //콘트롤러에서 숫자(글번호)를 전달받아 서비스로 전달
+                //서비스 클래스에서는 전달받은 글번호로 글정보 조회
+                //조회한 글의 추천수를 +1하여 수정
+                //증가된 추천수를 콘트롤러로 리턴
+                //콘트롤러는 받은 추천수를 다시 리턴
+                //success함수에서 추천수를 받아 화면에 표시
+
+                $.ajax({
+                    url: 'like',
+                    method: 'get',
+                    data: {num: $(this).attr('num')},
+                    success: function(n) {
+                        $('#cnt').html(n);
+                    },
+                    error: function(e) {
+                        alert(e.responseText);
+                    }
+                });
+           });
+        });
+    </script>
+</head>
+<body>
+    <h2>[ 추천하기 ]</h2>
+
+    <button id="bt" num="1">추천</button>
+    <span id="cnt">0</span>
+
+</body>
+</html>
+
