@@ -7,13 +7,14 @@
     <script>
         $(document).ready(function() {
             $('#bt1').click(function () {
+                //서버로 Ajax요청보내는 함수
                 $.ajax({
-                    url: 'test1',
-                    type: 'get',
-                    success: function() {
+                    url: 'test1',       //요청 경로
+                    type: 'get',        //메소드
+                    success: function() {   //성공시 실행될 콜백함수
                         alert('실행 성공');
                     },
-                    error: function(e) {
+                    error: function(e) {    //실패시 실행될 콜백함수
                         alert('실행 실패');
                         alert(e);
                         alert(JSON.stringify(e));
@@ -27,7 +28,7 @@
                 $.ajax({
                     url: 'test2',
                     type: 'get',
-                    data: { str :'클라이언트에서 보낸 문자열'},
+                    data: { str :'클라이언트에서 보낸 문자열'}, //서버로 보낼 parameter
                     success: function() {
                         alert('실행 성공');
                     },
@@ -41,7 +42,7 @@
                 $.ajax({
                     url: 'test3',
                     type: 'get',
-                    dataType: 'text',  //text, json
+                    dataType: 'text',  //서버로부터 받을 데이터 타입. text 또는 json
                     success: function(s) {
                         alert(s);
                     },

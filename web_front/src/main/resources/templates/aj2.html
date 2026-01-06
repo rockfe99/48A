@@ -6,129 +6,243 @@
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
     <script>
         $(document).ready(function() {
-            $('#formButton1').click(function() {
-                //폼에 입력한 값을 읽어옴
-                let n = $('#name1').val();
-                let a = $('#age1').val();
-                let p = $('#phone1').val();
-
-                //유효성검사
-                if (n === '') {
-                    alert('이름을 입력하세요.');
-                    return;
-                }
-                //서버로 전달하여 저장
-                $.ajax({
-                    url: 'insert1',
-                    type: 'post',
-                    data: {'name': n, 'age': a, 'phone': p},
-                    success: function() {
-                        alert('저장되었습니다.');
-                    },
-                    error: function() {
-                        alert('저장 실패');
-                    }
-                });
-
-            });
-
-            $('#formButton2').click(function() {
-                //폼에 입력한 값을 읽어옴
-                let n = $('#name2').val();
-                let a = $('#age2').val();
-                let p = $('#phone2').val();
-
-                //유효성검사
-                if (n === '') {
-                    alert('이름을 입력하세요.');
-                    return;
-                }
-
-                let ob = {'name': n, 'age': a, 'phone': p};
-
-                //서버로 전달하여 저장
-                $.ajax({
-                    url: 'insert2',
-                    type: 'post',
-                    data: ob,
-                    success: function() {
-                        alert('저장되었습니다.');
-                    },
-                    error: function() {
-                        alert('저장 실패');
-                    }
-                });
-
-            });
-
-            $('#formButton3').click(function() {
-                $.ajax({
-                    url: 'insert2',
-                    type: 'post',
-                    data: $('#writeForm3').serialize(),
-                    success: function() {
-                        alert('저장되었습니다.');
-                    },
-                    error: function() {
-                        alert('저장 실패');
-                    }
-                });
-
-            });
-
-            $('#bt1').click(function() {
-                $.ajax({
-                    url: 'getObject',
-                    type: 'get',
-                    dataType: 'json',
-                    success: function(ob) {
-                        let text = `이름 : ${ob.name}<br>
-                                    나이 : ${ob.age}<br>
-                                    전화 : ${ob.phone}<br>`;
-                        $('#outputDiv').html(text);
-                    },
-                    error: function() {
-                        alert('오류');
-                    }
-                });
-            });
-
-
+            $('#formButton1').on('click', formSubmit1);
+            $('#formButton2').on('click', formSubmit2);
+            $('#formButton3').on('click', formSubmit3);
+            $('#bt1').on('click', getObject1);
+            $('#bt2').on('click', getObject2);
+            $('#bt3').on('click', getList);
+            $('#bt4').on('click', sendArray);
+            $('#bt5').on('click', sendObjectArray);
         });
 
+        //입력한 내용을 서버로 전송 1
+        function formSubmit1() {
+             //폼에 입력한 이름과 리플내용을 읽어옴
+            var n = $('#name1').val();
+            var a = $('#age1').val();
+            var p = $('#phone1').val();
+
+            //유효성 검사
+            if (n == '') {
+                alert('이름을 입력하세요.');
+                return;
+            }
+            if (a == '' || isNaN(a)) {
+                alert('나이를 숫자로 입력하세요.');
+                return;
+            }
+
+            //사용자가 입력한 내용을 서버로 전송.
+            $.ajax({
+                url: 'insert1',
+                type: 'post',
+                data: {'name': n, 'age': a, 'phone': p},
+                success: function() {
+                    alert('저장되었습니다.');
+                    $('#name1').val('');
+                    $('#age1').val('0');
+                    $('#phone1').val('');
+                },
+                error: function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        //입력한 내용을 서버로 전송 2
+        function formSubmit2() {
+             //폼에 입력한 이름과 리플내용을 읽어옴
+            var n = $('#name2').val();
+            var a = $('#age2').val();
+            var p = $('#phone2').val();
+
+            //JSON 객체로 생성
+            var ob = {"name":n, "age": a, "phone": p};
+
+            $.ajax({
+                url: 'insert2',
+                type: 'post',
+                data: ob,
+                success: function() {
+                    alert('저장되었습니다.');
+                    $('#name2').val('');
+                    $('#age2').val('0');
+                    $('#phone2').val('');
+                },
+                error: function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+
+        }
+
+        //입력한 내용을 서버로 전송 3
+        function formSubmit3() {
+            $.ajax({
+                url : 'insert3',
+                type : 'post',
+                data : $('#writeForm3').serialize(),
+                success : function() {
+                    alert('저장되었습니다.');
+                    $('#name3').val('');
+                    $('#age3').val('0');
+                    $('#phone3').val('');
+                },
+                error: function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        //서버에서 객체 받기 요청 (String으로 받기)
+        function getObject1() {
+            $.ajax({
+                url : 'getObject',
+                type : 'get',
+                dataType : 'text',
+                success : function(ob) {
+                    $('#outputDiv1').html(ob);
+                },
+                error : function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        //서버에서 객체 받기 요청 (JSON으로 받기)
+        function getObject2() {
+            $.ajax({
+                url : 'getObject',
+                type : 'get',
+                dataType : 'json',
+                success : function(ob) {
+        /* 			var str = '받은 객체 : ' + ob + '<br>';
+                    str += '이름 : ' + ob.name + '<br>';
+                    str += '나이 : ' + ob.age + '<br>';
+                    str += '전화 : ' + ob.phone + '<br>'; */
+
+                    let str = `이름:${ob.name}
+                        나이:${ob.age} <br>
+                        전화:${ob.phone}`;
+                    $('#outputDiv2').html(str);
+                },
+                error : function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        //서버에서 리스트 받기
+        function getList() {
+            $.ajax({
+                url : 'getList',
+                type : 'get',
+                dataType : 'json',
+                success : function(list) {
+                    let str = '<table>';
+
+                    $(list).each(function(idx, ob) {
+                        str += '<tr>';
+                        str += '<td>' + ob.name + '</td>';
+                        str += '<td>' + ob.age + '</td>';
+                        str += '<td>' + ob.phone + '</td>';
+                        str += '</tr>'
+                    });
+                    str += '</table>';
+
+                    $('#outputDiv3').html(str);
+                },
+                error : function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        //서버로 배열 보내기
+        function sendArray() {
+             //JavaScript의 배열
+            var ar = ['aaa', 'bbb', 'ccc'];
+
+            $.ajax({
+                url: 'sendArray',
+                type: 'post',
+                traditional: true,
+                data: {ar : ar},
+                success: function() {
+                    alert('저장되었습니다.');
+                },
+                error: function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
+
+        //서버로 객체 배열 보내기
+        function sendObjectArray() {
+             //JavaScript의 배열
+            var ar = [{name:'aaa',age:11,phone:'1111'}, {name:'bbb',age:22,phone:'2222'}];
+
+            $.ajax({
+                url: 'sendObjectArray',
+                type: 'post',
+                //traditional: true,
+                data: {ar : JSON.stringify(ar)},
+                success: function() {
+                    alert('저장되었습니다.');
+                },
+                error: function(e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        }
     </script>
 </head>
 <body>
-    <h2>[ 객체 보내기 / 받기 ]</h2>
 
-    <p>1. 서버로 각각의 Parameter를 전달</p>
-    <form id="writeForm1">
-        이름 <input type="text" id="name1"><br>
-        나이 <input type="number" id="age1" value="0"><br>
-        전화 <input type="text" id="phone1"><br>
-        <input type="button" id="formButton1" value="저장">
-    </form>
+<h1>[ 객체 보내기 / 받기 ]</h1>
 
-    <p>2. 서버에서 객체로 받기</p>
-    <form id="writeForm2">
-        이름 <input type="text" id="name2"><br>
-        나이 <input type="number" id="age2" value="0"><br>
-        전화 <input type="text" id="phone2"><br>
-        <input type="button" id="formButton2" value="저장">
-    </form>
+<p>1. 서버로 각각의 Parameter를 전달</p>
+<form id="writeForm1">
+    이름 <input type="text" id="name1"><br>
+    나이 <input type="number" id="age1" value="0"><br>
+    전화 <input type="text" id="phone1"><br>
+    <input type="button" id="formButton1" value="저장">
+</form>
 
-    <p>3. 서버에서 객체로 받기</p>
-    <form id="writeForm3">
-        이름 <input type="text" name="name" id="name3"><br>
-        나이 <input type="number"  name="age" id="age3" value="0"><br>
-        전화 <input type="text" name="phone" id="phone3"><br>
-        <input type="button" id="formButton3" value="저장">
-    </form>
+<p>2. 서버의 VO객체로 전달 1</p>
+<form id="writeForm2">
+    이름 <input type="text" id="name2"><br>
+    나이 <input type="number" id="age2" value="0"><br>
+    전화 <input type="text" id="phone2"><br>
+    <input type="button" id="formButton2" value="저장">
+</form>
 
-    <p>4. 서버에서 객체 받기</p>
-    <p><button id="bt1">객체 받기</button></p>
-    <div id="outputDiv"></div>
+<p>3. 서버의 VO객체로 전달 2</p>
+<form id="writeForm3">
+    이름	<input type="text" id="name3" name="name"><br>
+    나이 <input type="number" id="age3" name="age" value="0"><br>
+    전화 <input type="text" id="phone3" name="phone"><br>
+    <input type="button" id="formButton3" value="저장">
+</form>
 
+<p>4. 서버에서 VO객체의 값을 String으로 받기</p>
+<p><input type="button" id="bt1" value="서버에서 객체 받기"></p>
+<div id="outputDiv1"></div>
+
+<p>5. 서버에서 VO객체의 값을 JSON으로 받기</p>
+<p><input type="button" id="bt2" value="서버에서 객체 받기"></p>
+<div id="outputDiv2"></div>
+
+<p>6. 서버에서 리스트 받기</p>
+<p><input type="button" id="bt3" value="서버에서 리스트 받기"></p>
+<div id="outputDiv3"></div>
+
+<p>7. 서버로 배열 보내기</p>
+<p><input type="button" id="bt4" value="서버로 배열 보내기"></p>
+
+<p>8. 서버로 객체 배열 보내기</p>
+<p><input type="button" id="bt5" value="서버로 객체배열 보내기"></p>
 
 </body>
 </html>

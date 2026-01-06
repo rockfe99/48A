@@ -1,9 +1,13 @@
 package net.datasa.front;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.datasa.front.dto.Person;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Slf4j
 @RequestMapping("ajax")
@@ -65,6 +69,59 @@ public class AjaxController {
     public Person getObject() {
         Person p = new Person("홍길동", 22, "010-1111-1111");
         return p;
+    }
+
+
+    @ResponseBody
+    @GetMapping("getList")
+    public ArrayList<Person> getList() {
+        ArrayList<Person> list = new ArrayList<>();
+
+        list.add(new Person("홍길동", 30, "010-1111-1111"));
+        list.add(new Person("김철수", 40, "010-2222-2222"));
+        list.add(new Person("이영희", 50, "010-3333-4444"));
+
+        return list;
+    }
+
+    /**
+     * 배열 전달
+     */
+    @ResponseBody
+    @PostMapping("sendArray")
+    public void sendArray(String[] ar) {
+        if (ar == null) {
+            log.debug("ar : null");
+        }
+        else {
+            for (String s : ar) {
+                log.debug("배열요소 : {}", s);
+            }
+        }
+    }
+
+    /**
+     * 객체 배열 전달
+     */
+    @ResponseBody
+    @PostMapping("sendObjectArray")
+    public void sendArray(String ar) throws Exception {
+        if (ar == null) {
+            log.debug("ar : null");
+            return;
+        }
+
+        log.debug("전달받은 문자열 : {}", ar);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<Person> list = objectMapper.readValue(ar, new TypeReference<ArrayList<Person>>() {});
+        log.debug("변환결과 리스트 : {}", list);
+
+        for (Object ob : list) {
+            log.debug("요소타입 : {}", ob.getClass());
+            log.debug("요소값 : {}", ob);
+        }
+
     }
 
 }
