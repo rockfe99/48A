@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>JavaScript/jQuery/Ajax</title>
+<style>
+#msg {
+	color: red;
+	width: 200px;
+	display: inline-block;
+}
+label {
+	width: 50px;
+	display: inline-block;
+}
+</style>
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script>
+$(document).ready(function() {
+    $('#userId').keyup(function() {
+        let id = $(this).val();
+        if (id.length < 3 || id.length > 10) {
+            $('#msg').html('ID는 3~10자로 입력하세요.');
+            $('#submitButton').attr('disabled', true);
+            return;
+        }
+
+        $.ajax({
+            url: 'idcheck',
+            type: 'get',
+            data : { userId: id},
+            success : function (result) {
+                if (result) {
+                    $('#msg').html('이미 사용중인 ID입니다.');
+                    $('#submitButton').attr('disabled', true);
+                }
+                else {
+                    $('#submitButton').attr('disabled', false);
+                    $('#msg').html('');
+                }
+            },
+            error : function () {
+                alert('ID 조회 실패');
+            }
+        });
+
+
+    });
+});
+
+</script>
+</head>
+<body>
+<h2>[ ID 중복 확인 ]</h2>
+<div>
+<form action="join" method="post">
+	<p>
+        <label for="userId">ID</label>
+	 	<input type="text" id="userId" name="userId">
+        <span id="msg"></span>
+        <!--  입력란에 한글자 입력할때마다 글자수를 확인해서
+          3~10자가 아니면 오류메시지 출력 -->
+    </p>
+	<p>
+        <label for="name">이름</label>
+		<input type="text" id="name" name="name" required="required">
+    </p>
+	<p>
+        <input type="submit" value="가입" id="submitButton" disabled="disabled">
+    </p>
+</form>
+</div>
+
+</body>
+</html>

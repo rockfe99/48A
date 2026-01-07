@@ -1,4 +1,4 @@
-package net.datasa.front;
+package net.datasa.front.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

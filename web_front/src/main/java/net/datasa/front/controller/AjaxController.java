@@ -1,9 +1,10 @@
-package net.datasa.front;
+package net.datasa.front.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.datasa.front.dto.Member;
 import net.datasa.front.dto.Person;
 import net.datasa.front.service.AjaxService;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class AjaxController {
 
     private final AjaxService ajaxService;
+
 
     @GetMapping("aj1")
     public String aj1() {
@@ -152,6 +154,36 @@ public class AjaxController {
         catch (Exception e) {
             return ResponseEntity.badRequest().body("추천실패");
         }
+    }
+
+    /**
+     * ID중복확인 페이지로 이동
+     */
+    @GetMapping("join")
+    public String join() {
+        return "join";
+    }
+
+    /**
+     * ID 중복 확인. 해당 ID가 있으며 true
+     */
+    @ResponseBody
+    @GetMapping("idcheck")
+    public ResponseEntity<?> idcheck(@RequestParam String userId) {
+        boolean result = ajaxService.findMemberId(userId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 회원 가입 처리
+     * @param member 회원 정보
+     * @return 메인화면으로 이동
+     */
+    @PostMapping("join")
+    public String join(Member member) {
+        log.debug("join() : {}", member);
+        ajaxService.join(member);
+        return "redirect:/";
     }
 
 }
